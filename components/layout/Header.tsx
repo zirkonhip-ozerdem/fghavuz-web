@@ -1,119 +1,103 @@
-import {ChevronDown, Languages, Search} from "lucide-react";
-import {getTranslations} from "next-intl/server";
+﻿"use client";
+
+import {ChevronDown, Languages, Menu, Search} from "lucide-react";
+import {usePathname} from "next/navigation";
+import {useTranslations} from "next-intl";
 import {Link} from "@/i18n/navigation";
 import type {Locale} from "@/i18n/routing";
-import {getFeaturedCategories} from "@/lib/api/catalog";
 import {Logo} from "./Logo";
 
 const navItems = [
   {key: "home", href: "/"},
   {key: "corporate", href: "/corporate"},
   {key: "products", href: "/products"},
-  {key: "catalog", href: "/catalog"},
   {key: "blog", href: "/blog"},
+  {key: "catalog", href: "/catalog"},
   {key: "contact", href: "/contact"},
 ] as const;
 
-export async function Header({locale}: {locale: Locale}) {
-  const t = await getTranslations("nav");
-  const categories = await getFeaturedCategories();
+export function Header({locale}: {locale: Locale}) {
+  const t = useTranslations("nav");
+  const pathname = usePathname() ?? "";
+
+  const activeLink = (href: string) =>
+    href === "/"
+      ? pathname === `/${locale}` || pathname === `/${locale}/`
+      : pathname === `/${locale}${href}` || pathname.startsWith(`/${locale}${href}/`);
 
   return (
-    <header className="fixed inset-x-0 top-0 z-50 border-b border-ink/8 bg-white/86 backdrop-blur-xl">
-      <div className="mx-auto flex h-18 max-w-7xl items-center gap-5 px-5 sm:px-8">
+    <nav className="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-white/20 dark:border-slate-700/20 shadow-sm transition-all duration-500 hover:bg-white/95">
+      <div className="flex justify-between items-center px-5 md:px-8 max-w-7xl mx-auto h-20">
         <Logo locale={locale} />
 
-        <nav className="hidden flex-1 items-center justify-center gap-1 lg:flex">
-          {navItems.map((item) => {
-            if (item.key === "products") {
-              return (
-                <div className="group relative" key={item.key}>
-                  <Link
-                    href={item.href}
-                    locale={locale}
-                    className="flex items-center gap-1 rounded-full px-3 py-2 text-sm font-semibold text-ink/70 transition hover:bg-neutral-soft hover:text-primary"
-                  >
-                    {t(item.key)}
-                    <ChevronDown className="size-3.5" aria-hidden="true" />
-                  </Link>
-                  <div className="invisible absolute start-0 top-full w-[33rem] translate-y-3 rounded-lg border border-ink/10 bg-white p-3 opacity-0 shadow-[0_24px_60px_rgba(17,17,20,0.14)] transition group-hover:visible group-hover:translate-y-2 group-hover:opacity-100">
-                    <div className="grid grid-cols-2 gap-2">
-                      {categories.map((category) => (
-                        <Link
-                          key={category.id}
-                          href={`/products/${category.slug}`}
-                          locale={locale}
-                          className="rounded-md border border-transparent p-3 transition hover:border-primary/12 hover:bg-neutral-soft"
-                        >
-                          <span className="block text-xs font-bold uppercase tracking-[0.16em] text-accent">
-                            {category.kicker[locale]}
-                          </span>
-                          <span className="mt-1 block text-sm font-extrabold text-ink">
-                            {category.name[locale]}
-                          </span>
-                          <span className="mt-1 block text-xs leading-5 text-ink/58">
-                            {category.description[locale]}
-                          </span>
-                        </Link>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              );
-            }
+        <div className="hidden md:flex items-center gap-8">
+          {navItems.map((item) => (
+            <Link
+              key={item.key}
+              href={item.href}
+              locale={locale}
+              className={`font-medium text-sm tracking-tight transition ${
+                activeLink(item.href)
+                  ? "text-primary border-b-2 border-primary pb-1"
+                  : "text-ink/80 hover:text-[#F4B96A]"
+              }`}
+            >
+              {t(item.key)}
+            </Link>
+          ))}
+        </div>
 
-            return (
-              <Link
-                key={item.key}
-                href={item.href}
-                locale={locale}
-                className="rounded-full px-3 py-2 text-sm font-semibold text-ink/70 transition hover:bg-neutral-soft hover:text-primary"
-              >
-                {t(item.key)}
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div className="ms-auto flex items-center gap-2">
-          <Link
-            href="/products"
-            locale={locale}
-            className="hidden size-10 place-items-center rounded-full border border-ink/10 text-ink/68 transition hover:border-primary/24 hover:text-primary sm:grid"
+        <div className="flex items-center gap-4">
+          <button
+            type="button"
+            className="hidden md:grid h-10 w-10 place-items-center rounded-full text-slate-700 hover:bg-slate-100 transition-colors"
             aria-label="Search"
           >
             <Search className="size-4" aria-hidden="true" />
-          </Link>
-          <div className="group relative">
+          </button>
+
+          <div className="relative group hidden md:block">
             <button
-              className="flex h-10 items-center gap-1 rounded-full border border-ink/10 px-3 text-xs font-bold uppercase text-ink/70 transition hover:border-primary/25"
+              type="button"
+              className="flex items-center justify-center gap-2 h-9 w-[130px] rounded-full text-xs font-semibold uppercase text-ink/80 bg-transparent transition-colors hover:bg-slate-100"
               aria-label={t("language")}
             >
               <Languages className="size-4" aria-hidden="true" />
-              {locale}
+              <span>{locale.toUpperCase()}</span>
+              <ChevronDown className="size-4 opacity-70" aria-hidden="true" />
             </button>
-            <div className="invisible absolute end-0 top-full flex translate-y-3 flex-col rounded-lg border border-ink/10 bg-white p-1 opacity-0 shadow-[0_20px_44px_rgba(17,17,20,0.13)] transition group-hover:visible group-hover:translate-y-2 group-hover:opacity-100">
+            <div className="absolute right-0 top-full mt-2 w-32 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl opacity-0 invisible transition-all duration-300 group-hover:visible group-hover:opacity-100 z-50">
               {(["en", "tr", "ar"] as const).map((item) => (
                 <Link
                   key={item}
                   href="/"
                   locale={item}
-                  className="rounded-md px-4 py-2 text-sm font-semibold uppercase text-ink/70 hover:bg-neutral-soft"
+                  className={`flex items-center justify-between px-3 py-1.5 text-[11px] font-medium uppercase transition hover:bg-slate-100 ${
+                    item === locale ? "text-primary" : "text-slate-600"
+                  }`}
                 >
-                  {item}
+                  <span>{item.toUpperCase()}</span>
+                  {item === locale ? (
+                    <span className="text-[14px] text-primary">✓</span>
+                  ) : null}
                 </Link>
               ))}
             </div>
           </div>
+
           <Link
             href="/quote"
             locale={locale}
-            className="inline-flex min-h-10 items-center rounded-full bg-accent px-4 text-sm font-bold text-white shadow-[0_10px_24px_rgba(232,72,58,0.25)] transition hover:bg-accent-dark"
+            className="hidden md:inline-flex h-9 w-[130px] items-center justify-center rounded-full bg-primary text-white text-xs font-semibold transition-all duration-300 hover:bg-primary-dark"
           >
             {t("quote")}
           </Link>
+
+          <button className="md:hidden flex items-center justify-center w-10 h-10 rounded-full text-slate-900 hover:bg-slate-100 transition-colors">
+            <Menu className="size-5" aria-hidden="true" />
+          </button>
         </div>
       </div>
-    </header>
+    </nav>
   );
 }
