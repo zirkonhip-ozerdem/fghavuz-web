@@ -1,0 +1,78 @@
+{
+  "meta": {
+    "title": "FGPOOL | Havuz Ekipmanları Üreticisi",
+    "description": "Oteller, su sporları merkezleri ve toptan distribütörler için profesyonel havuz ızgarası, drenaj ve yapısal ekipmanlar."
+  },
+  "nav": {
+    "home": "Anasayfa",
+    "corporate": "Kurumsal",
+    "products": "Ürünler",
+    "catalog": "Katalog",
+    "blog": "Blog",
+    "contact": "İletişim",
+    "support": "Destek",
+    "quote": "Teklif Al",
+    "language": "Dil"
+  },
+  "home": {
+    "eyebrow": "Su için mühendislik",
+    "title": "Profesyonel Yüzme Havuzu Ekipmanları Üreticisi",
+    "description": "Toptancılar, uygulama ekipleri ve lüks su mimarisi projeleri için yüksek performanslı ızgara, drenaj ve yapısal sistemler.",
+    "quote": "Teklif Al",
+    "download": "Mobil Uygulamayı İndir",
+    "search": "Ürün, kategori veya uygulama ara",
+    "searchButton": "Ara",
+    "suggestions": "Öneriler",
+    "heroCardOne": "ABS Taşma Izgaraları",
+    "heroCardOneText": "Otel ve kamusal havuzlar için modüler profiller.",
+    "heroCardTwo": "Ana Drenaj Sistemleri",
+    "heroCardTwoText": "Yüksek debili akış mühendisliği.",
+    "componentsTitle": "Mühendislik Bileşenleri",
+    "componentsText": "Dayanıklılık ve akış verimi için hassas üretim.",
+    "catalogLink": "Tüm Kataloğu Gör",
+    "factoryEyebrow": "Üretim Uzmanlığı",
+    "factoryTitle": "Modern Üretim Teknolojisiyle Üretilir",
+    "factoryText": "50.000 ft² üretim tesisimiz, her bileşenin uluslararası standartları karşılaması için gelişmiş enjeksiyon kalıplama ve hassas işleme süreçleri kullanır.",
+    "advantageTitle": "FGPOOL Avantajı",
+    "advantageText": "Uzun ömür için mühendislik. Ölçek için tasarım. Global mimarlar tarafından güven.",
+    "projectsTitle": "Global Uygulamalar",
+    "statTitle": "500+ Proje",
+    "statText": "40 ülkede su mimarisi projelerine tedarik.",
+    "ctaTitle": "Tedarik zincirinizi güçlendirmeye hazır mısınız?",
+    "ctaText": "Premium havuz bileşenlerinde güvenilir, yüksek hacimli üretim ve doğrudan toptan fiyatlama için FGPOOL ile çalışın.",
+    "dealer": "Distribütör Ol",
+    "sales": "Satış Ekibiyle Görüş"
+  },
+  "sections": {
+    "corporateTitle": "Endüstriyel uzmanlık, havuzda hassasiyet",
+    "corporateText": "FGPOOL, ticari inşaat, otel projeleri ve bölgesel distribütörler için sürdürülebilir kalite odağıyla havuz ekipmanları üretir.",
+    "productsTitle": "Ürün Sistemleri",
+    "productsText": "Taşma kanalı, drenaj, dönüş hattı ve modüler havuz kenarı detayları için temel ürün ailelerini inceleyin.",
+    "catalogTitle": "Teknik Kataloglar",
+    "catalogText": "Satın alma ekipleri ve proje ofisleri için satışa ve mühendisliğe hazır ürün bilgilerini indirin.",
+    "blogTitle": "Bilgi Merkezi",
+    "blogText": "Havuz ekipmanı seçimi, uygulama planlaması ve bakım odaklı tasarım için pratik notlar.",
+    "quoteTitle": "Proje Teklifi İsteyin",
+    "quoteText": "Proje kapsamınızı paylaşın; toptan satış ekibimiz doğru ürün karmasını hazırlasın.",
+    "contactTitle": "İletişim ve Destek",
+    "contactText": "Ürün danışmanlığı, numune, lojistik veya distribütörlük iş birliği için FGPOOL ile iletişime geçin."
+  },
+  "footer": {
+    "summary": "FGPOOL, toptan satış ve proje tedariki için profesyonel yüzme havuzu bileşenleri üretir.",
+    "company": "Şirket",
+    "resources": "Kaynaklar",
+    "connect": "İletişim",
+    "rights": "Tüm hakları saklıdır.",
+    "privacy": "Gizlilik Politikası",
+    "terms": "Kullanım Şartları",
+    "factory": "Üretim Teknolojisi",
+    "docs": "Teknik Dokümanlar",
+    "portal": "B2B Portal"
+  },
+  "fab": {
+    "open": "Hızlı işlemleri aç",
+    "whatsapp": "WhatsApp",
+    "ios": "App Store",
+    "android": "Google Play"
+  }
+}

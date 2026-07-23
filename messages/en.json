@@ -1,0 +1,78 @@
+{
+  "meta": {
+    "title": "FGPOOL | Swimming Pool Equipment Manufacturer",
+    "description": "Professional pool grating, drainage and structural equipment for hotels, aquatic centers and wholesale distributors."
+  },
+  "nav": {
+    "home": "Home",
+    "corporate": "Corporate",
+    "products": "Products",
+    "catalog": "Catalog",
+    "blog": "Blog",
+    "contact": "Contact",
+    "support": "Support",
+    "quote": "Request Quote",
+    "language": "Language"
+  },
+  "home": {
+    "eyebrow": "Equipment engineered for water",
+    "title": "Professional Swimming Pool Equipment Manufacturer",
+    "description": "High-performance grating, drainage, and structural systems engineered for wholesalers, construction pros and luxury aquatic architecture.",
+    "quote": "Request a Quote",
+    "download": "Download Mobile App",
+    "search": "Search product, category or application",
+    "searchButton": "Search",
+    "suggestions": "Suggestions",
+    "heroCardOne": "ABS Overflow Gratings",
+    "heroCardOneText": "Modular profiles for hotel and public pools.",
+    "heroCardTwo": "Main Drain Systems",
+    "heroCardTwoText": "High-flow capacity engineering.",
+    "componentsTitle": "Engineered Components",
+    "componentsText": "Precision manufactured for durability and fluid dynamics.",
+    "catalogLink": "View Full Catalog",
+    "factoryEyebrow": "Factory Expertise",
+    "factoryTitle": "Manufactured with Modern Production Technology",
+    "factoryText": "Our 50,000 sq ft facility utilizes advanced injection molding and precision machining to ensure every component meets rigorous international standards.",
+    "advantageTitle": "The FGPOOL Advantage",
+    "advantageText": "Engineered for longevity. Designed for scale. Trusted by global architects.",
+    "projectsTitle": "Global Installations",
+    "statTitle": "500+ Projects",
+    "statText": "Supplying aquatic architecture across 40 countries.",
+    "ctaTitle": "Ready to upgrade your supply chain?",
+    "ctaText": "Partner with FGPOOL for reliable, high-volume manufacturing and direct wholesale pricing on premium aquatic components.",
+    "dealer": "Become a Distributor",
+    "sales": "Contact Sales Team"
+  },
+  "sections": {
+    "corporateTitle": "Industrial know-how, aquatic precision",
+    "corporateText": "FGPOOL manufactures pool equipment for commercial construction, hospitality projects and regional distributors with a focus on repeatable quality.",
+    "productsTitle": "Product Systems",
+    "productsText": "Browse core equipment families designed for overflow channels, drainage, return flow and modular pool edge details.",
+    "catalogTitle": "Technical Catalogs",
+    "catalogText": "Download sales-ready and engineering-ready product information for procurement teams and project offices.",
+    "blogTitle": "Knowledge Center",
+    "blogText": "Practical notes on pool equipment selection, installation planning and maintenance-aware design.",
+    "quoteTitle": "Request a Project Quote",
+    "quoteText": "Share your project scope and our wholesale team will prepare the right product mix.",
+    "contactTitle": "Contact and Support",
+    "contactText": "Reach FGPOOL for product guidance, samples, logistics, or distributor cooperation."
+  },
+  "footer": {
+    "summary": "FGPOOL manufactures professional swimming pool components for wholesale and project supply.",
+    "company": "Company",
+    "resources": "Resources",
+    "connect": "Connect",
+    "rights": "All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Use",
+    "factory": "Production Technology",
+    "docs": "Technical Docs",
+    "portal": "B2B Portal"
+  },
+  "fab": {
+    "open": "Open quick actions",
+    "whatsapp": "WhatsApp",
+    "ios": "App Store",
+    "android": "Google Play"
+  }
+}

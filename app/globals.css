@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f7f5f2;
+  --foreground: #111114;
+  --primary: #1b2a4a;
+  --primary-light: #263b65;
+  --accent: #e8483a;
+  --accent-dark: #cf372c;
+  --neutral-soft: #f7f5f2;
+  --ink: #111114;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-light: var(--primary-light);
+  --color-accent: var(--accent);
+  --color-accent-dark: var(--accent-dark);
+  --color-neutral-soft: var(--neutral-soft);
+  --color-ink: var(--ink);
+  --font-sans: Arial, Helvetica, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--background);
+}
+
+body {
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+  text-rendering: geometricPrecision;
+}
+
+a {
+  text-decoration: none;
+}
+
+button,
+input,
+textarea {
+  font: inherit;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--accent) 22%, transparent);
+}
+
+[dir="rtl"] .rtl\:rotate-180 {
+  transform: rotate(180deg);
+}
