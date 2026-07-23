@@ -49,3 +49,4 @@ exported by Laravel instead of maintaining a second ORM in the frontend.
 - Locale routes are `/en`, `/tr`, and `/ar`.
 - Arabic uses RTL via the locale layout.
 - `npm run dev` starts the standard Next.js development server.
+# fghavuz-web
