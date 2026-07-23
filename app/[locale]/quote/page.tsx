@@ -11,6 +11,7 @@ export default async function QuotePage({
   const locale = rawLocale as Locale;
   const t = await getTranslations({locale, namespace: "sections"});
 
+  
   return (
     <main>
       <section className="relative overflow-hidden bg-neutral-soft pt-36">
