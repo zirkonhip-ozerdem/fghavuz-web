@@ -1,8 +1,8 @@
 "use client";
 
 import {Search} from "lucide-react";
+import {useRouter} from "next/navigation";
 import {useMemo, useState} from "react";
-import {useRouter} from "@/i18n/navigation";
 import type {Locale} from "@/i18n/routing";
 import type {ProductCategory} from "@/lib/api/catalog";
 
@@ -43,7 +43,7 @@ export function ProductSearch({
     const target = query.trim()
       ? `/products?search=${encodeURIComponent(query.trim())}`
       : "/products";
-    router.push(target);
+    router.push(`/${locale}${target}`);
   }
 
   return (
@@ -79,7 +79,7 @@ export function ProductSearch({
             <button
               key={category.id}
               type="button"
-              onClick={() => router.push(`/products/${category.slug}`)}
+              onClick={() => router.push(`/${locale}/products/${category.slug}`)}
               className="block w-full rounded-md px-3 py-2 text-start transition hover:bg-neutral-soft"
             >
               <span className="block text-sm font-bold text-ink">
