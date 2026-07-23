@@ -28,19 +28,19 @@ export async function Hero({
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(247,245,242,0.95)_0%,rgba(247,245,242,0.74)_44%,rgba(17,17,20,0.22)_100%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_28%,rgba(232,72,58,0.20),transparent_34%)]" />
 
-      <div className="relative mx-auto grid max-w-7xl gap-10 px-5 pb-16 pt-24 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:pb-24 lg:pt-32">
+      <div className="relative mx-auto grid max-w-7xl gap-8 px-5 pb-14 pt-18 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:pb-20 lg:pt-24">
         <div className="max-w-3xl">
           <p className="text-xs font-black uppercase tracking-[0.2em] text-accent">
             {t("eyebrow")}
           </p>
-          <h1 className="mt-4 max-w-3xl text-[clamp(3rem,7vw,6.8rem)] font-black leading-[0.9] tracking-normal text-ink">
+          <h1 className="mt-4 max-w-3xl text-[clamp(1.8rem,4.2vw,4rem)] font-black leading-[1] tracking-normal text-ink">
             {t("title")}
           </h1>
-          <p className="mt-6 max-w-xl text-base leading-7 text-ink/68 sm:text-lg">
+          <p className="mt-3 max-w-xl text-[0.82rem] leading-5 text-ink/68 sm:text-[0.95rem]">
             {t("description")}
           </p>
 
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-3 flex flex-col gap-3 sm:flex-row">
             <Link
               href="/quote"
               locale={locale}
@@ -68,9 +68,9 @@ export async function Hero({
           </div>
         </div>
 
-        <div className="relative hidden min-h-[480px] lg:block">
+        <div className="relative hidden min-h-[560px] lg:block">
           <FeatureNote className="absolute end-6 top-20" icon={Gauge} title={t("heroCardOne")} text={t("heroCardOneText")} />
-          <FeatureNote className="absolute bottom-24 start-12" icon={Droplets} title={t("heroCardTwo")} text={t("heroCardTwoText")} />
+          <FeatureNote className="absolute bottom-20 start-12" icon={Droplets} title={t("heroCardTwo")} text={t("heroCardTwoText")} />
         </div>
       </div>
     </section>
@@ -89,7 +89,7 @@ function FeatureNote({
   text: string;
 }) {
   return (
-    <div className={`${className} w-72 rounded-lg border border-white/52 bg-white/74 p-5 shadow-[0_20px_60px_rgba(17,17,20,0.16)] backdrop-blur-xl`}>
+    <div className={`${className} w-72 rounded-lg border border-white/52 bg-white/74 p-5 shadow-[0_20px_60px_rgba(17,17,20,0.16)] backdrop-blur-xl transition-transform duration-300 hover:-translate-y-2 hover:scale-[1.02]`}>
       <span className="grid size-9 place-items-center rounded-full bg-accent/10 text-accent">
         <Icon className="size-4" aria-hidden="true" />
       </span>

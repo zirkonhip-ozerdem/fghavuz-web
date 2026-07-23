@@ -11,6 +11,7 @@ import {
 import Image from "next/image";
 import {getTranslations} from "next-intl/server";
 import {Link} from "@/i18n/navigation";
+import ClientMarquee from "./ClientMarquee";
 import type {Locale} from "@/i18n/routing";
 import type {Advantage, ProductCategory, Project} from "@/lib/api/catalog";
 
@@ -30,52 +31,31 @@ export async function EngineeredComponents({
   const t = await getTranslations("home");
 
   return (
-    <section className="bg-white py-20">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <h2 className="text-4xl font-black tracking-normal text-ink sm:text-5xl">
-              {t("componentsTitle")}
-            </h2>
-            <p className="mt-3 max-w-xl text-sm leading-6 text-ink/58">
-              {t("componentsText")}
-            </p>
-          </div>
-          <Link
-            href="/catalog"
-            locale={locale}
-            className="inline-flex items-center gap-2 text-sm font-bold text-accent transition hover:text-accent-dark"
-          >
-            {t("catalogLink")}
-            <ArrowRight className="size-4 rtl:rotate-180" aria-hidden="true" />
-          </Link>
+    <section className="bg-[#fcf9f8] border-t border-[#8e706f]/30 overflow-hidden py-20 md:py-28">
+      <div className="mx-auto max-w-7xl px-5 md:px-8 mb-12 flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+        <div>
+          <h2 className="text-4xl font-black tracking-normal text-ink sm:text-5xl md:text-5xl">
+            {t("componentsTitle")}
+          </h2>
+          <p className="mt-3 max-w-xl text-sm leading-6 text-ink/58">
+            {t("componentsText")}
+          </p>
         </div>
+        <Link
+          href="/catalog"
+          locale={locale}
+          className="hidden md:inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.12em] text-[#b52330] transition hover:text-[#410007]"
+        >
+          {t("catalogLink")}
+          <ArrowRight className="size-4 rtl:rotate-180" aria-hidden="true" />
+        </Link>
+      </div>
 
-        <div className="mt-9 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {categories.map((category) => (
-            <Link
-              key={category.id}
-              href={`/products/${category.slug}`}
-              locale={locale}
-              className="group rounded-lg border border-ink/8 bg-neutral-soft p-3 transition hover:-translate-y-1 hover:border-primary/18 hover:bg-white hover:shadow-[0_18px_44px_rgba(17,17,20,0.10)]"
-            >
-              <div className="relative aspect-[1.35] overflow-hidden rounded-md bg-white">
-                <Image
-                  src={category.image}
-                  alt={category.name[locale]}
-                  fill
-                  sizes="(min-width: 1024px) 25vw, 50vw"
-                  className="object-cover transition duration-500 group-hover:scale-105"
-                />
-              </div>
-              <p className="mt-4 text-[0.62rem] font-black uppercase tracking-[0.18em] text-ink/38">
-                {category.kicker[locale]}
-              </p>
-              <h3 className="mt-1 text-base font-extrabold text-ink">
-                {category.name[locale]}
-              </h3>
-            </Link>
-          ))}
+      <div className="relative w-full overflow-hidden bg-[#f0eded] py-8">
+        <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-[#fcf9f8] to-transparent z-10 pointer-events-none" />
+        <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-[#fcf9f8] to-transparent z-10 pointer-events-none" />
+        <div className="relative">
+          <ClientMarquee categories={categories} locale={locale} />
         </div>
       </div>
     </section>
@@ -86,9 +66,9 @@ export async function FactoryBanner() {
   const t = await getTranslations("home");
 
   return (
-    <section className="bg-neutral-soft py-20">
+    <section className="bg-[#fcf9f8] py-20">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="relative min-h-[430px] overflow-hidden rounded-lg bg-ink p-6 text-white shadow-[0_24px_70px_rgba(17,17,20,0.18)] sm:p-10">
+        <div className="relative min-h-[430px] overflow-hidden rounded-2xl bg-[#132238] p-6 text-white shadow-[0_32px_64px_rgba(19,34,56,0.04)] sm:p-10">
           <Image
             src="/assets/factory-floor.jpeg"
             alt=""
@@ -129,7 +109,7 @@ export async function AdvantageSection({
   const t = await getTranslations("home");
 
   return (
-    <section className="bg-[#fbfaf8] py-20">
+    <section className="bg-[#fcf9f8] py-20">
       <div className="mx-auto max-w-7xl px-5 text-center sm:px-8">
         <h2 className="text-4xl font-black tracking-normal text-ink sm:text-5xl">
           {t("advantageTitle")}
@@ -144,15 +124,15 @@ export async function AdvantageSection({
             return (
               <article
                 key={advantage.id}
-                className="rounded-lg border border-ink/7 bg-white p-6 shadow-[0_14px_38px_rgba(17,17,20,0.05)]"
+                className="rounded-3xl border border-[#e2e8f0] bg-white p-6 shadow-[0_32px_64px_rgba(19,34,56,0.04)]"
               >
-                <span className="grid size-10 place-items-center rounded-md bg-accent/10 text-accent">
+                <span className="grid size-10 place-items-center rounded-md bg-[rgba(255,90,95,0.1)] text-[#ff5a5f]">
                   <Icon className="size-5" aria-hidden="true" />
                 </span>
-                <h3 className="mt-5 text-lg font-extrabold text-ink">
+                <h3 className="mt-5 text-lg font-extrabold text-[#1b1c1c]">
                   {advantage.title[locale]}
                 </h3>
-                <p className="mt-3 text-sm leading-6 text-ink/58">
+                <p className="mt-3 text-sm leading-6 text-[#1b1c1c]/70">
                   {advantage.description[locale]}
                 </p>
               </article>
@@ -175,7 +155,7 @@ export async function ProjectGallery({
   const [featured, secondary] = projects;
 
   return (
-    <section className="bg-[#fbfaf8] pb-24">
+    <section className="bg-[#fcf9f8] pb-24">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <h2 className="text-center text-4xl font-black tracking-normal text-ink sm:text-5xl">
           {t("projectsTitle")}
@@ -184,7 +164,7 @@ export async function ProjectGallery({
           <ProjectCard project={featured} locale={locale} large />
           <div className="grid gap-5">
             <ProjectCard project={secondary} locale={locale} />
-            <div className="grid min-h-56 place-items-center rounded-lg bg-accent p-8 text-center text-ink">
+            <div className="grid min-h-56 place-items-center rounded-3xl bg-accent p-8 text-center text-ink">
               <div>
                 <Building2 className="mx-auto size-9" aria-hidden="true" />
                 <h3 className="mt-5 text-3xl font-black">{t("statTitle")}</h3>
@@ -202,9 +182,9 @@ export async function CtaBanner({locale}: {locale: Locale}) {
   const t = await getTranslations("home");
 
   return (
-    <section className="bg-[#fbfaf8] pb-20">
+    <section className="bg-[#fcf9f8] pb-20">
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <div className="relative overflow-hidden rounded-lg bg-ink px-6 py-16 text-center text-white shadow-[0_20px_60px_rgba(17,17,20,0.16)] sm:px-10">
+        <div className="relative overflow-hidden rounded-2xl bg-[#132238] px-6 py-16 text-center text-white shadow-[0_32px_64px_rgba(19,34,56,0.04)] sm:px-10">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_76%_20%,rgba(232,72,58,0.32),transparent_32%),radial-gradient(circle_at_12%_88%,rgba(27,42,74,0.45),transparent_30%)]" />
           <div className="relative mx-auto max-w-3xl">
             <CheckCircle2 className="mx-auto mb-5 size-8 text-accent" aria-hidden="true" />
@@ -218,7 +198,8 @@ export async function CtaBanner({locale}: {locale: Locale}) {
               <Link
                 href="/quote"
                 locale={locale}
-                className="inline-flex min-h-11 items-center justify-center rounded-full bg-accent px-5 text-sm font-bold text-white transition hover:bg-accent-dark"
+                className="inline-flex min-h-11 items-center justify-center rounded-full px-5 text-sm font-bold text-white transition"
+                style={{background: 'linear-gradient(90deg,#ff5a5f,#ffa552)'}}
               >
                 {t("dealer")}
               </Link>
@@ -250,8 +231,8 @@ function ProjectCard({
     <article
       className={
         large
-          ? "relative min-h-[460px] overflow-hidden rounded-lg bg-ink text-white"
-          : "relative min-h-56 overflow-hidden rounded-lg bg-ink text-white"
+          ? "relative min-h-[460px] overflow-hidden rounded-3xl bg-[#132238] text-white shadow-[0_32px_64px_rgba(19,34,56,0.04)]"
+          : "relative min-h-56 overflow-hidden rounded-3xl bg-[#132238] text-white shadow-[0_24px_48px_rgba(19,34,56,0.03)]"
       }
     >
       <Image
