@@ -1,7 +1,7 @@
 # FGPOOL Web
 
 Frontend-only FGPOOL corporate website built with Next.js App Router, TypeScript,
-Tailwind CSS, Vinext and Sites hosting.
+Tailwind CSS and static frontend data services.
 
 Backend work is planned as a separate Laravel phase. Do not add a frontend ORM
 to this repository unless the backend architecture is changed to Node.js.
@@ -48,5 +48,4 @@ exported by Laravel instead of maintaining a second ORM in the frontend.
 
 - Locale routes are `/en`, `/tr`, and `/ar`.
 - Arabic uses RTL via the locale layout.
-- Local development disables image optimization to avoid Cloudflare image binding
-  issues on localhost. Production build keeps the normal image setup.
+- `npm run dev` starts the standard Next.js development server.

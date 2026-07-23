@@ -7,9 +7,10 @@ import {getFeaturedCategories} from "@/lib/api/catalog";
 export default async function ProductsPage({
   params,
 }: {
-  params: Promise<{locale: Locale}>;
+  params: Promise<{locale: string}>;
 }) {
-  const {locale} = await params;
+  const {locale: rawLocale} = await params;
+  const locale = rawLocale as Locale;
   const t = await getTranslations({locale, namespace: "sections"});
   const categories = await getFeaturedCategories();
 

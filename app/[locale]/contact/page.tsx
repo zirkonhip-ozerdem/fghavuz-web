@@ -6,9 +6,10 @@ import type {Locale} from "@/i18n/routing";
 export default async function ContactPage({
   params,
 }: {
-  params: Promise<{locale: Locale}>;
+  params: Promise<{locale: string}>;
 }) {
-  const {locale} = await params;
+  const {locale: rawLocale} = await params;
+  const locale = rawLocale as Locale;
   const t = await getTranslations({locale, namespace: "sections"});
 
   return (

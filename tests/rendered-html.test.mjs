@@ -1,52 +1,68 @@
 import assert from "node:assert/strict";
-import {readFile} from "node:fs/promises";
+import {access, readFile} from "node:fs/promises";
 import test from "node:test";
 
-async function render(path = "/en") {
-  const workerUrl = new URL("../dist/server/index.js", import.meta.url);
-  workerUrl.searchParams.set("test", `${process.pid}-${Date.now()}`);
-  const {default: worker} = await import(workerUrl.href);
+const root = new URL("../", import.meta.url);
 
-  return worker.fetch(
-    new Request(`http://localhost${path}`, {
-      headers: {accept: "text/html"},
-    }),
-    {
-      ASSETS: {
-        fetch: async () => new Response("Not found", {status: 404}),
-      },
-    },
-    {
-      waitUntil() {},
-      passThroughOnException() {},
-    },
-  );
+async function exists(path) {
+  try {
+    await access(new URL(path, root));
+    return true;
+  } catch {
+    return false;
+  }
 }
 
-test("server-renders the FGPOOL homepage", async () => {
-  const response = await render();
-  assert.equal(response.status, 200);
-  assert.match(response.headers.get("content-type") ?? "", /^text\/html\b/i);
+test("uses standard Next.js scripts without Vinext tooling", async () => {
+  const packageJson = JSON.parse(
+    await readFile(new URL("package.json", root), "utf8"),
+  );
 
-  const html = await response.text();
-  assert.match(html, /Professional Swimming Pool Equipment Manufacturer/i);
-  assert.match(html, /Engineered Components/i);
-  assert.match(html, /The FGPOOL Advantage/i);
-  assert.match(html, /Global Installations/i);
-  assert.doesNotMatch(html, /codex-preview|SkeletonPreview|react-loading-skeleton/i);
+  assert.equal(packageJson.scripts.dev, "next dev");
+  assert.equal(packageJson.scripts.build, "next build");
+  assert.equal(packageJson.scripts.start, "next start");
+
+  const allPackages = {
+    ...packageJson.dependencies,
+    ...packageJson.devDependencies,
+  };
+
+  for (const name of [
+    "vinext",
+    "vite",
+    "wrangler",
+    "@cloudflare/vite-plugin",
+    "@vitejs/plugin-react",
+    "@vitejs/plugin-rsc",
+    "react-server-dom-webpack",
+  ]) {
+    assert.equal(allPackages[name], undefined);
+  }
 });
 
-test("keeps localized content and starter metadata out of source", async () => {
-  const [packageJson, english, turkish, arabic] = await Promise.all([
-    readFile(new URL("../package.json", import.meta.url), "utf8"),
-    readFile(new URL("../messages/en.json", import.meta.url), "utf8"),
-    readFile(new URL("../messages/tr.json", import.meta.url), "utf8"),
-    readFile(new URL("../messages/ar.json", import.meta.url), "utf8"),
+test("keeps locale content and brand logo contract intact", async () => {
+  const [english, turkish, arabic, logo] = await Promise.all([
+    readFile(new URL("messages/en.json", root), "utf8"),
+    readFile(new URL("messages/tr.json", root), "utf8"),
+    readFile(new URL("messages/ar.json", root), "utf8"),
+    readFile(new URL("components/layout/Logo.tsx", root), "utf8"),
   ]);
 
-  assert.match(packageJson, /"name": "fgpool-web"/);
-  assert.doesNotMatch(packageJson, /react-loading-skeleton/);
   assert.match(english, /Request Quote/);
   assert.match(turkish, /Teklif Al/);
   assert.match(arabic, /طلب عرض/);
+  assert.match(logo, /src="\/assets\/logo\.png"/);
+  assert.doesNotMatch(logo, /next\/image|_vinext\/image/);
+});
+
+test("removes adapter and hosting starter files", async () => {
+  for (const path of [
+    "vite.config.ts",
+    "worker/index.ts",
+    "build/sites-vite-plugin.ts",
+    ".openai/hosting.json",
+    "app/chatgpt-auth.ts",
+  ]) {
+    assert.equal(await exists(path), false, `${path} should not exist`);
+  }
 });

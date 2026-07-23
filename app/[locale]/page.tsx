@@ -16,9 +16,10 @@ import {
 export default async function HomePage({
   params,
 }: {
-  params: Promise<{locale: Locale}>;
+  params: Promise<{locale: string}>;
 }) {
-  const {locale} = await params;
+  const {locale: rawLocale} = await params;
+  const locale = rawLocale as Locale;
   const [categories, advantages, projects] = await Promise.all([
     getFeaturedCategories(),
     getAdvantages(),

@@ -15,9 +15,10 @@ export async function generateStaticParams() {
 export default async function ProductDetailPage({
   params,
 }: {
-  params: Promise<{locale: Locale; slug: string}>;
+  params: Promise<{locale: string; slug: string}>;
 }) {
-  const {locale, slug} = await params;
+  const {locale: rawLocale, slug} = await params;
+  const locale = rawLocale as Locale;
   const categories = await getFeaturedCategories();
   const product = categories.find((category) => category.slug === slug) ?? categories[0];
   const related = categories.filter((category) => category.id !== product.id).slice(0, 3);

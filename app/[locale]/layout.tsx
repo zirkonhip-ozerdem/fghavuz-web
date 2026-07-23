@@ -15,9 +15,12 @@ export function generateStaticParams() {
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{locale: Locale}>;
+  params: Promise<{locale: string}>;
 }): Promise<Metadata> {
-  const {locale} = await params;
+  const {locale: rawLocale} = await params;
+  const locale = hasLocale(routing.locales, rawLocale)
+    ? rawLocale
+    : routing.defaultLocale;
   const t = await getTranslations({locale, namespace: "meta"});
   const languages = Object.fromEntries(
     routing.locales.map((item) => [item, `/${item}`]),
@@ -46,14 +49,15 @@ export default async function LocaleLayout({
   params,
 }: Readonly<{
   children: React.ReactNode;
-  params: Promise<{locale: Locale}>;
+  params: Promise<{locale: string}>;
 }>) {
-  const {locale} = await params;
+  const {locale: rawLocale} = await params;
 
-  if (!hasLocale(routing.locales, locale)) {
+  if (!hasLocale(routing.locales, rawLocale)) {
     notFound();
   }
 
+  const locale = rawLocale as Locale;
   const messages = await getMessages();
   const dir = locale === "ar" ? "rtl" : "ltr";
 
