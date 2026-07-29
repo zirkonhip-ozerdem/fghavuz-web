@@ -8,7 +8,6 @@ export default async function ContactPage({
   return (
     <div className="bg-gray-50 min-h-screen pb-16">
       
-      {/* REVİZE 1 & 2: Üstten çok daha fazla boşluk (pt-24) ve Beyazdan Griye yumuşak renk geçişi (bg-gradient) eklendi */}
       <div className="bg-gradient-to-b from-white to-gray-50 pt-24 pb-16 mb-6 text-center">
         <div className="container mx-auto px-4 max-w-7xl">
           <h1 className="text-4xl md:text-5xl font-bold text-slate-900 mb-6">İletişim ve Destek</h1>
@@ -21,7 +20,6 @@ export default async function ContactPage({
       <div className="container mx-auto px-4 max-w-7xl">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
           
-          {/* Sol Taraf: Harita ve Kartlar */}
           <div className="lg:col-span-1 flex flex-col gap-5 h-full">
             
             <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
@@ -50,7 +48,6 @@ export default async function ContactPage({
             
           </div>
 
-          {/* Sağ Taraf: İletişim Formu */}
           <div className="lg:col-span-2 bg-white p-8 md:p-10 rounded-lg shadow-sm border border-gray-100 flex flex-col h-full">
             <h2 className="text-2xl font-bold text-slate-900 mb-6">Bize Mesaj Gönderin</h2>
             
@@ -66,13 +63,11 @@ export default async function ContactPage({
                 </div>
               </div>
 
-              {/* REVİZE 3: Textarea 'flex-1' ile uzatıldı, kutu çizgisi butona yaklaştırıldı */}
               <div className="flex flex-col flex-1 mb-6">
                 <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">Mesajınız</label>
                 <textarea id="message" className="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-900 resize-none flex-1" placeholder="Lütfen mesajınızı buraya yazın..."></textarea>
               </div>
 
-              {/* Buton alt çizgide haritayla kusursuz hizalandı */}
               <div className="mt-auto">
                 <button type="button" className="bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-8 rounded transition-colors duration-300 w-full sm:w-auto">
                   Mesajı Gönder
