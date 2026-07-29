@@ -57,11 +57,11 @@ export async function Footer({locale}: {locale: Locale}) {
           <ul className="mt-4 space-y-3 text-sm text-white/62">
             <li className="flex gap-3">
               <MapPin className="mt-0.5 size-4 shrink-0 text-accent" />
-              Anatolian Industrial Zone, Istanbul, Türkiye
+              6172 Sokak No: 14F İç Kapı No: 11 Bornova / İzmir
             </li>
             <li className="flex gap-3">
               <Phone className="mt-0.5 size-4 shrink-0 text-accent" />
-              +90 212 000 00 00
+              +90 (242) 555 01 23
             </li>
             <li className="flex gap-3">
               <Mail className="mt-0.5 size-4 shrink-0 text-accent" />
@@ -81,6 +81,29 @@ export async function Footer({locale}: {locale: Locale}) {
               </Link>
             ))}
           </div>
+        </div>
+        <div className="mx-auto max-w-7xl px-5 pb-5 text-center text-xs text-white/46 sm:px-8">
+          <p>
+            Bu bir{" "}
+            <a
+              href="https://yengecyazilim.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-[#ff5722] transition hover:underline"
+            >
+              Yengeç Yazılım
+            </a>{" "}
+            ve{" "}
+            <a
+              href="https://yazilimnealaka.com.tr/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-semibold text-[#0dafff] transition hover:underline"
+            >
+              YNA Ekibi
+            </a>{" "}
+            projesidir.
+          </p>
         </div>
       </div>
     </footer>
