@@ -1,10 +1,12 @@
 ﻿"use client";
 
-import {ChevronDown, Languages, Menu, Search} from "lucide-react";
-import {usePathname} from "next/navigation";
+import {ChevronDown, Menu, Search, X} from "lucide-react";
+import {usePathname, useRouter} from "next/navigation";
 import {useTranslations} from "next-intl";
+import {useEffect, useMemo, useRef, useState} from "react";
 import {Link} from "@/i18n/navigation";
 import type {Locale} from "@/i18n/routing";
+import {getFeaturedCategories, type ProductCategory} from "@/lib/api/catalog";
 import {Logo} from "./Logo";
 
 const navItems = [
@@ -18,14 +20,84 @@ const navItems = [
 
 export function Header({locale}: {locale: Locale}) {
   const t = useTranslations("nav");
+  const tHome = useTranslations("home");
   const pathname = usePathname() ?? "";
+  const router = useRouter();
+
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [categories, setCategories] = useState<ProductCategory[]>([]);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const activeLink = (href: string) =>
     href === "/"
       ? pathname === `/${locale}` || pathname === `/${locale}/`
       : pathname === `/${locale}${href}` || pathname.startsWith(`/${locale}${href}/`);
 
+  useEffect(() => {
+    getFeaturedCategories().then(setCategories);
+  }, []);
+
+  useEffect(() => {
+    if (searchOpen) {
+      searchInputRef.current?.focus();
+    }
+  }, [searchOpen]);
+
+  useEffect(() => {
+    if (!searchOpen) return;
+
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") {
+        closeSearch();
+      }
+    }
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [searchOpen]);
+
+  const suggestions = useMemo(() => {
+    const normalized = query.trim().toLocaleLowerCase(locale);
+
+    if (!normalized) {
+      return [];
+    }
+
+    return categories
+      .filter((category) =>
+        [category.name[locale], category.kicker[locale], category.slug]
+          .join(" ")
+          .toLocaleLowerCase(locale)
+          .includes(normalized),
+      )
+      .slice(0, 5);
+  }, [categories, locale, query]);
+
+  function openSearch() {
+    setSearchOpen(true);
+  }
+
+  function closeSearch() {
+    setSearchOpen(false);
+    setQuery("");
+  }
+
+  function submitSearch() {
+    const target = query.trim()
+      ? `/products?search=${encodeURIComponent(query.trim())}`
+      : "/products";
+    router.push(`/${locale}${target}`);
+    closeSearch();
+  }
+
+  function goToCategory(slug: string) {
+    router.push(`/${locale}/products/${slug}`);
+    closeSearch();
+  }
+
   return (
+    <>
     <nav className="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-white/20 dark:border-slate-700/20 shadow-sm transition-all duration-500 hover:bg-white/95">
       <div className="flex justify-between items-center px-5 md:px-8 max-w-7xl mx-auto h-20">
         <Logo locale={locale} />
@@ -50,8 +122,10 @@ export function Header({locale}: {locale: Locale}) {
         <div className="flex items-center gap-4">
           <button
             type="button"
+            onClick={openSearch}
             className="hidden md:grid h-10 w-10 place-items-center rounded-full text-slate-700 hover:bg-slate-100 transition-colors"
-            aria-label="Search"
+            aria-label={tHome("searchButton")}
+            aria-expanded={searchOpen}
           >
             <Search className="size-4" aria-hidden="true" />
           </button>
@@ -62,7 +136,6 @@ export function Header({locale}: {locale: Locale}) {
               className="flex items-center justify-center gap-2 h-9 w-[130px] rounded-full text-xs font-semibold uppercase text-ink/80 bg-transparent transition-colors hover:bg-slate-100"
               aria-label={t("language")}
             >
-              <Languages className="size-4" aria-hidden="true" />
               <span>{locale.toUpperCase()}</span>
               <ChevronDown className="size-4 opacity-70" aria-hidden="true" />
             </button>
@@ -99,5 +172,77 @@ export function Header({locale}: {locale: Locale}) {
         </div>
       </div>
     </nav>
+
+    <div
+      className={`fixed inset-0 z-40 bg-ink/40 backdrop-blur-sm transition-opacity duration-300 ${
+        searchOpen ? "opacity-100" : "pointer-events-none opacity-0"
+      }`}
+      onClick={closeSearch}
+      aria-hidden="true"
+    />
+
+    <div
+      className={`fixed inset-x-0 top-0 z-50 bg-white shadow-[0_24px_60px_rgba(17,17,20,0.18)] transition-transform duration-300 ${
+        searchOpen ? "translate-y-0" : "-translate-y-full"
+      }`}
+      role="search"
+    >
+      <div className="mx-auto flex max-w-7xl items-center gap-3 px-5 py-6 md:px-8">
+        <Search className="size-5 shrink-0 text-primary/60" aria-hidden="true" />
+        <input
+          ref={searchInputRef}
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          onKeyDown={(event) => {
+            if (event.key === "Enter") {
+              submitSearch();
+            }
+          }}
+          placeholder={tHome("search")}
+          className="min-w-0 flex-1 bg-transparent text-base font-medium text-ink outline-none placeholder:text-ink/42"
+        />
+        <button
+          type="button"
+          onClick={submitSearch}
+          className="hidden shrink-0 rounded-full bg-primary px-4 py-2 text-xs font-semibold uppercase text-white transition hover:bg-primary-dark sm:inline-flex"
+        >
+          {tHome("searchButton")}
+        </button>
+        <button
+          type="button"
+          onClick={closeSearch}
+          className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-slate-700 transition-colors hover:bg-slate-100"
+          aria-label={t("close")}
+        >
+          <X className="size-5" aria-hidden="true" />
+        </button>
+      </div>
+
+      {query.trim() && suggestions.length > 0 ? (
+        <div className="mx-auto max-w-7xl px-5 pb-6 md:px-8">
+          <p className="px-1 pb-2 text-xs font-bold uppercase tracking-[0.16em] text-ink/42">
+            {tHome("suggestions")}
+          </p>
+          <div className="overflow-hidden rounded-lg border border-ink/10">
+            {suggestions.map((category) => (
+              <button
+                key={category.id}
+                type="button"
+                onClick={() => goToCategory(category.slug)}
+                className="block w-full border-b border-ink/8 px-4 py-3 text-start transition last:border-b-0 hover:bg-neutral-soft"
+              >
+                <span className="block text-sm font-bold text-ink">
+                  {category.name[locale]}
+                </span>
+                <span className="block text-xs text-ink/55">
+                  {category.description[locale]}
+                </span>
+              </button>
+            ))}
+          </div>
+        </div>
+      ) : null}
+    </div>
+    </>
   );
 }
