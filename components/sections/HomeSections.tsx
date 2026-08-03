@@ -201,7 +201,7 @@ export async function CtaBanner({locale}: {locale: Locale}) {
                 className="inline-flex min-h-11 items-center justify-center rounded-full px-5 text-sm font-bold text-white transition"
                 style={{background: 'linear-gradient(90deg,#ff5a5f,#ffa552)'}}
               >
-                {t("dealer")}
+                {t("quote")}
               </Link>
               <Link
                 href="/contact"
