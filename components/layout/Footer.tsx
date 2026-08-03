@@ -8,24 +8,29 @@ export async function Footer({locale}: {locale: Locale}) {
   const t = await getTranslations();
 
   return (
-    <footer className="bg-ink text-white">
+    <footer id="site-footer" className="bg-ink text-white">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 py-12 sm:px-8 lg:grid-cols-[1.2fr_0.8fr_0.8fr_1fr]">
         <div>
-          <Logo locale={locale} dark />
+          <Logo locale={locale} />
           <p className="mt-5 max-w-sm text-sm leading-6 text-white/58">
             {t("footer.summary")}
           </p>
           <div className="mt-5 flex gap-2">
-            {[Mail, Share2].map((Icon, index) => (
-              <a
-                key={index}
-                href={index === 0 ? "mailto:sales@fgpool.com" : "#"}
-                className="grid size-9 place-items-center rounded-full border border-white/12 text-white/68 transition hover:border-white/30 hover:text-white"
-                aria-label={index === 0 ? "Email" : "Share"}
-              >
-                <Icon className="size-4" aria-hidden="true" />
-              </a>
-            ))}
+            <a
+              href="mailto:sales@fgpool.com"
+              className="grid size-9 place-items-center rounded-full border border-white/12 text-white/68 transition hover:border-white/30 hover:text-white"
+              aria-label="Email"
+            >
+              <Mail className="size-4" aria-hidden="true" />
+            </a>
+            <Link
+              href="/contact"
+              locale={locale}
+              className="grid size-9 place-items-center rounded-full border border-white/12 text-white/68 transition hover:border-white/30 hover:text-white"
+              aria-label="Share"
+            >
+              <Share2 className="size-4" aria-hidden="true" />
+            </Link>
           </div>
         </div>
 
