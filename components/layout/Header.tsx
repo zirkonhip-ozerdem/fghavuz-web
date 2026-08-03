@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import {ChevronDown, Menu, Search, X} from "lucide-react";
 import {usePathname, useRouter} from "next/navigation";
@@ -25,9 +25,12 @@ export function Header({locale}: {locale: Locale}) {
   const router = useRouter();
 
   const [searchOpen, setSearchOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [categories, setCategories] = useState<ProductCategory[]>([]);
   const searchInputRef = useRef<HTMLInputElement>(null);
+
+  const panelOpen = searchOpen || mobileOpen;
 
   const activeLink = (href: string) =>
     href === "/"
@@ -45,17 +48,28 @@ export function Header({locale}: {locale: Locale}) {
   }, [searchOpen]);
 
   useEffect(() => {
-    if (!searchOpen) return;
+    if (!panelOpen) return;
 
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") {
-        closeSearch();
+        closePanels();
       }
     }
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [searchOpen]);
+  }, [panelOpen]);
+
+  useEffect(() => {
+    closePanels();
+  }, [pathname]);
+
+  useEffect(() => {
+    document.body.style.overflow = panelOpen ? "hidden" : "";
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [panelOpen]);
 
   const suggestions = useMemo(() => {
     const normalized = query.trim().toLocaleLowerCase(locale);
@@ -74,13 +88,20 @@ export function Header({locale}: {locale: Locale}) {
       .slice(0, 5);
   }, [categories, locale, query]);
 
+  function closePanels() {
+    setSearchOpen(false);
+    setMobileOpen(false);
+    setQuery("");
+  }
+
   function openSearch() {
+    setMobileOpen(false);
     setSearchOpen(true);
   }
 
-  function closeSearch() {
+  function toggleMobileMenu() {
     setSearchOpen(false);
-    setQuery("");
+    setMobileOpen((open) => !open);
   }
 
   function submitSearch() {
@@ -88,30 +109,127 @@ export function Header({locale}: {locale: Locale}) {
       ? `/products?search=${encodeURIComponent(query.trim())}`
       : "/products";
     router.push(`/${locale}${target}`);
-    closeSearch();
+    closePanels();
   }
 
   function goToCategory(slug: string) {
     router.push(`/${locale}/products/${slug}`);
-    closeSearch();
+    closePanels();
   }
 
   return (
     <>
-    <nav className="fixed top-0 w-full z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-xl border-b border-white/20 dark:border-slate-700/20 shadow-sm transition-all duration-500 hover:bg-white/95">
-      <div className="flex justify-between items-center px-5 md:px-8 max-w-7xl mx-auto h-20">
-        <Logo locale={locale} />
+      <nav className="fixed top-0 w-full z-50 h-20 bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-sm transition-all duration-500">
+        <div className="flex h-full items-center justify-between px-5 md:px-8 max-w-7xl mx-auto">
+          <Logo locale={locale} />
 
-        <div className="hidden md:flex items-center gap-8">
+          <div className="hidden md:flex items-center gap-8">
+            {navItems.map((item) => (
+              <Link
+                key={item.key}
+                href={item.href}
+                locale={locale}
+                className={`font-medium text-sm tracking-tight transition ${
+                  activeLink(item.href)
+                    ? "text-primary border-b-2 border-primary pb-1"
+                    : "text-ink/80 hover:text-[#F4B96A]"
+                }`}
+              >
+                {t(item.key)}
+              </Link>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-4">
+            <button
+              type="button"
+              onClick={openSearch}
+              className="hidden md:grid h-10 w-10 place-items-center rounded-full text-slate-700 hover:bg-slate-100 transition-colors"
+              aria-label={tHome("searchButton")}
+              aria-expanded={searchOpen}
+            >
+              <Search className="size-4" aria-hidden="true" />
+            </button>
+
+            <div className="relative group hidden md:block">
+              <button
+                type="button"
+                className="flex items-center justify-center gap-2 h-9 w-[130px] rounded-full text-xs font-semibold uppercase text-ink/80 bg-transparent transition-colors hover:bg-slate-100"
+                aria-label={t("language")}
+              >
+                <span>{locale.toUpperCase()}</span>
+                <ChevronDown className="size-4 opacity-70" aria-hidden="true" />
+              </button>
+              <div className="absolute right-0 top-full mt-2 w-32 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl opacity-0 invisible transition-all duration-300 group-hover:visible group-hover:opacity-100 z-50">
+                {(["en", "tr", "ar"] as const).map((item) => (
+                  <Link
+                    key={item}
+                    href="/"
+                    locale={item}
+                    className={`flex items-center justify-between px-3 py-1.5 text-[11px] font-medium uppercase transition hover:bg-slate-100 ${
+                      item === locale ? "text-primary" : "text-slate-600"
+                    }`}
+                  >
+                    <span>{item.toUpperCase()}</span>
+                    {item === locale ? (
+                      <span className="text-[14px] text-primary">✓</span>
+                    ) : null}
+                  </Link>
+                ))}
+              </div>
+            </div>
+
+            <Link
+              href="/quote"
+              locale={locale}
+              className="hidden md:inline-flex h-9 w-[130px] items-center justify-center rounded-full bg-primary text-white text-xs font-semibold transition-all duration-300 hover:bg-primary-dark"
+            >
+              {t("quote")}
+            </Link>
+
+            <button
+              type="button"
+              onClick={toggleMobileMenu}
+              className="md:hidden flex items-center justify-center w-10 h-10 rounded-full text-slate-900 hover:bg-slate-100 transition-colors"
+              aria-label={mobileOpen ? t("close") : t("menu")}
+              aria-expanded={mobileOpen}
+            >
+              {mobileOpen ? (
+                <X className="size-5" aria-hidden="true" />
+              ) : (
+                <Menu className="size-5" aria-hidden="true" />
+              )}
+            </button>
+          </div>
+        </div>
+      </nav>
+
+      <div
+        className={`fixed inset-0 top-20 z-40 bg-ink/40 backdrop-blur-sm transition-opacity duration-300 ${
+          panelOpen ? "opacity-100" : "pointer-events-none opacity-0"
+        }`}
+        onClick={closePanels}
+        aria-hidden="true"
+      />
+
+      {/* Mobile nav menu */}
+      <div
+        className={`md:hidden fixed inset-x-0 top-20 z-50 max-h-[calc(100vh-5rem)] overflow-y-auto rounded-b-3xl bg-white shadow-[0_24px_60px_rgba(17,17,20,0.18)] transition-all duration-200 ${
+          mobileOpen
+            ? "translate-y-0 opacity-100"
+            : "pointer-events-none -translate-y-2 opacity-0"
+        }`}
+      >
+        <div className="flex flex-col gap-1 px-5 py-4">
           {navItems.map((item) => (
             <Link
               key={item.key}
               href={item.href}
               locale={locale}
-              className={`font-medium text-sm tracking-tight transition ${
+              className={`rounded-lg px-3 py-2.5 text-sm font-semibold transition ${
                 activeLink(item.href)
-                  ? "text-primary border-b-2 border-primary pb-1"
-                  : "text-ink/80 hover:text-[#F4B96A]"
+                  ? "bg-primary/10 text-primary"
+                  : "text-ink/80 hover:bg-slate-100"
               }`}
             >
               {t(item.key)}
@@ -119,130 +237,99 @@ export function Header({locale}: {locale: Locale}) {
           ))}
         </div>
 
-        <div className="flex items-center gap-4">
-          <button
-            type="button"
-            onClick={openSearch}
-            className="hidden md:grid h-10 w-10 place-items-center rounded-full text-slate-700 hover:bg-slate-100 transition-colors"
-            aria-label={tHome("searchButton")}
-            aria-expanded={searchOpen}
-          >
-            <Search className="size-4" aria-hidden="true" />
-          </button>
-
-          <div className="relative group hidden md:block">
-            <button
-              type="button"
-              className="flex items-center justify-center gap-2 h-9 w-[130px] rounded-full text-xs font-semibold uppercase text-ink/80 bg-transparent transition-colors hover:bg-slate-100"
-              aria-label={t("language")}
+        <div className="flex items-center gap-2 border-t border-slate-100 px-5 py-4">
+          {(["en", "tr", "ar"] as const).map((item) => (
+            <Link
+              key={item}
+              href="/"
+              locale={item}
+              className={`flex-1 rounded-full border py-2 text-center text-xs font-semibold uppercase transition ${
+                item === locale
+                  ? "border-primary text-primary"
+                  : "border-slate-200 text-slate-600 hover:bg-slate-100"
+              }`}
             >
-              <span>{locale.toUpperCase()}</span>
-              <ChevronDown className="size-4 opacity-70" aria-hidden="true" />
-            </button>
-            <div className="absolute right-0 top-full mt-2 w-32 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl opacity-0 invisible transition-all duration-300 group-hover:visible group-hover:opacity-100 z-50">
-              {(["en", "tr", "ar"] as const).map((item) => (
-                <Link
-                  key={item}
-                  href="/"
-                  locale={item}
-                  className={`flex items-center justify-between px-3 py-1.5 text-[11px] font-medium uppercase transition hover:bg-slate-100 ${
-                    item === locale ? "text-primary" : "text-slate-600"
-                  }`}
-                >
-                  <span>{item.toUpperCase()}</span>
-                  {item === locale ? (
-                    <span className="text-[14px] text-primary">✓</span>
-                  ) : null}
-                </Link>
-              ))}
-            </div>
-          </div>
+              {item.toUpperCase()}
+            </Link>
+          ))}
+        </div>
 
+        <div className="px-5 pb-6">
           <Link
             href="/quote"
             locale={locale}
-            className="hidden md:inline-flex h-9 w-[130px] items-center justify-center rounded-full bg-primary text-white text-xs font-semibold transition-all duration-300 hover:bg-primary-dark"
+            className="flex h-11 w-full items-center justify-center rounded-full bg-primary text-sm font-semibold text-white transition-all duration-300 hover:bg-primary-dark"
           >
             {t("quote")}
           </Link>
+        </div>
+      </div>
 
-          <button className="md:hidden flex items-center justify-center w-10 h-10 rounded-full text-slate-900 hover:bg-slate-100 transition-colors">
-            <Menu className="size-5" aria-hidden="true" />
+      {/* Search panel */}
+      <div
+        className={`fixed inset-x-0 top-20 z-50 rounded-b-3xl bg-white shadow-[0_24px_60px_rgba(17,17,20,0.18)] transition-all duration-200 ${
+          searchOpen
+            ? "translate-y-0 opacity-100"
+            : "pointer-events-none -translate-y-2 opacity-0"
+        }`}
+        role="search"
+      >
+        <div className="mx-auto flex max-w-7xl items-center gap-3 px-5 py-6 md:px-8">
+          <Search className="size-5 shrink-0 text-primary/60" aria-hidden="true" />
+          <input
+            ref={searchInputRef}
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            onKeyDown={(event) => {
+              if (event.key === "Enter") {
+                submitSearch();
+              }
+            }}
+            placeholder={tHome("search")}
+            className="min-w-0 flex-1 bg-transparent text-base font-medium text-ink outline-none placeholder:text-ink/42"
+          />
+          <button
+            type="button"
+            onClick={submitSearch}
+            className="hidden shrink-0 rounded-full bg-primary px-4 py-2 text-xs font-semibold uppercase text-white transition hover:bg-primary-dark sm:inline-flex"
+          >
+            {tHome("searchButton")}
+          </button>
+          <button
+            type="button"
+            onClick={closePanels}
+            className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-slate-700 transition-colors hover:bg-slate-100"
+            aria-label={t("close")}
+          >
+            <X className="size-5" aria-hidden="true" />
           </button>
         </div>
-      </div>
-    </nav>
 
-    <div
-      className={`fixed inset-0 z-40 bg-ink/40 backdrop-blur-sm transition-opacity duration-300 ${
-        searchOpen ? "opacity-100" : "pointer-events-none opacity-0"
-      }`}
-      onClick={closeSearch}
-      aria-hidden="true"
-    />
-
-    <div
-      className={`fixed inset-x-0 top-0 z-50 bg-white shadow-[0_24px_60px_rgba(17,17,20,0.18)] transition-transform duration-300 ${
-        searchOpen ? "translate-y-0" : "-translate-y-full"
-      }`}
-      role="search"
-    >
-      <div className="mx-auto flex max-w-7xl items-center gap-3 px-5 py-6 md:px-8">
-        <Search className="size-5 shrink-0 text-primary/60" aria-hidden="true" />
-        <input
-          ref={searchInputRef}
-          value={query}
-          onChange={(event) => setQuery(event.target.value)}
-          onKeyDown={(event) => {
-            if (event.key === "Enter") {
-              submitSearch();
-            }
-          }}
-          placeholder={tHome("search")}
-          className="min-w-0 flex-1 bg-transparent text-base font-medium text-ink outline-none placeholder:text-ink/42"
-        />
-        <button
-          type="button"
-          onClick={submitSearch}
-          className="hidden shrink-0 rounded-full bg-primary px-4 py-2 text-xs font-semibold uppercase text-white transition hover:bg-primary-dark sm:inline-flex"
-        >
-          {tHome("searchButton")}
-        </button>
-        <button
-          type="button"
-          onClick={closeSearch}
-          className="grid h-10 w-10 shrink-0 place-items-center rounded-full text-slate-700 transition-colors hover:bg-slate-100"
-          aria-label={t("close")}
-        >
-          <X className="size-5" aria-hidden="true" />
-        </button>
-      </div>
-
-      {query.trim() && suggestions.length > 0 ? (
-        <div className="mx-auto max-w-7xl px-5 pb-6 md:px-8">
-          <p className="px-1 pb-2 text-xs font-bold uppercase tracking-[0.16em] text-ink/42">
-            {tHome("suggestions")}
-          </p>
-          <div className="overflow-hidden rounded-lg border border-ink/10">
-            {suggestions.map((category) => (
-              <button
-                key={category.id}
-                type="button"
-                onClick={() => goToCategory(category.slug)}
-                className="block w-full border-b border-ink/8 px-4 py-3 text-start transition last:border-b-0 hover:bg-neutral-soft"
-              >
-                <span className="block text-sm font-bold text-ink">
-                  {category.name[locale]}
-                </span>
-                <span className="block text-xs text-ink/55">
-                  {category.description[locale]}
-                </span>
-              </button>
-            ))}
+        {query.trim() && suggestions.length > 0 ? (
+          <div className="mx-auto max-w-7xl px-5 pb-6 md:px-8">
+            <p className="px-1 pb-2 text-xs font-bold uppercase tracking-[0.16em] text-ink/42">
+              {tHome("suggestions")}
+            </p>
+            <div className="overflow-hidden rounded-lg border border-ink/10">
+              {suggestions.map((category) => (
+                <button
+                  key={category.id}
+                  type="button"
+                  onClick={() => goToCategory(category.slug)}
+                  className="block w-full border-b border-ink/8 px-4 py-3 text-start transition last:border-b-0 hover:bg-neutral-soft"
+                >
+                  <span className="block text-sm font-bold text-ink">
+                    {category.name[locale]}
+                  </span>
+                  <span className="block text-xs text-ink/55">
+                    {category.description[locale]}
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
-      ) : null}
-    </div>
+        ) : null}
+      </div>
     </>
   );
 }
