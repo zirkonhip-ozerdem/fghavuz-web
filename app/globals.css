@@ -21,6 +21,17 @@
   --color-neutral-soft: var(--neutral-soft);
   --color-ink: var(--ink);
   --font-sans: Arial, Helvetica, sans-serif;
+  --animate-wave-slow: wave 14s linear infinite;
+  --animate-wave-fast: wave 9s linear infinite;
+}
+
+@keyframes wave {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 * {
