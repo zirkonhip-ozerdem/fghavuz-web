@@ -1,12 +1,6 @@
 import { getTranslations } from "next-intl/server";
 
-export default async function ContactPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
-  const { locale } = await params;
-  
+export default async function ContactPage() {
   const t = await getTranslations("Contact");
 
   return (

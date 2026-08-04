@@ -1,13 +1,7 @@
 import { UploadCloud } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 
-export default async function QuotePage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
-  const { locale } = await params;
-  
+export default async function QuotePage() {
   const t = await getTranslations("Quote");
 
   return (
