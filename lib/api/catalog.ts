@@ -184,8 +184,72 @@ const projects: Project[] = [
   },
 ];
 
+export type CatalogDocument = {
+  id: string;
+  format: "PDF";
+  size: string;
+  href: string;
+  title: LocalizedText;
+  description: LocalizedText;
+};
+
+const catalogDocuments: CatalogDocument[] = [
+  {
+    id: "full-catalog",
+    format: "PDF",
+    size: "24.6 MB",
+    href: "/catalogs/fgpool-full-catalog.pdf",
+    title: {
+      en: "Complete Product Catalog",
+      tr: "Tam Ürün Kataloğu",
+      ar: "الكتالوج الكامل للمنتجات",
+    },
+    description: {
+      en: "Full product range with dimensions, materials and finish options for every series.",
+      tr: "Tüm seriler için ölçüler, malzemeler ve yüzey seçenekleriyle komple ürün gamı.",
+      ar: "التشكيلة الكاملة للمنتجات مع الأبعاد والمواد وخيارات التشطيب لكل سلسلة.",
+    },
+  },
+  {
+    id: "overflow-grating",
+    format: "PDF",
+    size: "8.9 MB",
+    href: "/catalogs/overflow-grating-systems.pdf",
+    title: {
+      en: "Overflow Grating Systems",
+      tr: "Taşma Izgara Sistemleri",
+      ar: "أنظمة شبكات الفيض",
+    },
+    description: {
+      en: "Interlocking and linear grating profiles with load ratings and installation details.",
+      tr: "Yük değerleri ve montaj detaylarıyla geçmeli ve lineer ızgara profilleri.",
+      ar: "مقاطع شبكات متداخلة وخطية مع معدلات التحميل وتفاصيل التركيب.",
+    },
+  },
+  {
+    id: "drainage-suction",
+    format: "PDF",
+    size: "6.7 MB",
+    href: "/catalogs/drainage-suction-systems.pdf",
+    title: {
+      en: "Main Drain & Suction Systems",
+      tr: "Ana Drenaj ve Emme Sistemleri",
+      ar: "أنظمة التصريف الرئيسي والشفط",
+    },
+    description: {
+      en: "Anti-vortex drains and suction fittings rated for public and commercial pools.",
+      tr: "Kamusal ve ticari havuzlar için anti-vorteks drenaj ve emme ekipmanları.",
+      ar: "مصارف مضادة للدوامة ووصلات شفط مصنفة للمسابح العامة والتجارية.",
+    },
+  },
+];
+
 export async function getFeaturedCategories() {
   return categories;
+}
+
+export async function getCatalogDocuments() {
+  return catalogDocuments;
 }
 
 export async function getAdvantages() {
