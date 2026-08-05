@@ -59,15 +59,9 @@
   },
   "footer": {
     "summary": "FGPOOL manufactures professional swimming pool components for wholesale and project supply.",
-    "company": "Company",
-    "resources": "Resources",
-    "connect": "Connect",
-    "rights": "All rights reserved.",
-    "privacy": "Privacy Policy",
-    "terms": "Terms of Use",
-    "factory": "Production Technology",
-    "docs": "Technical Docs",
-    "portal": "B2B Portal"
+    "pagesTitle": "Pages",
+    "legalTitle": "Legal Information",
+    "rights": "All rights reserved."
   },
   "fab": {
     "open": "Open quick actions",

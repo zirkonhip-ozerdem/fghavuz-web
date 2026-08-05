@@ -1,7 +1,7 @@
 "use client";
 
 import {MessageCircle, Smartphone, Store, X} from "lucide-react";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import type {Locale} from "@/i18n/routing";
 
 const labels = {
@@ -27,8 +27,27 @@ const labels = {
 
 export function FabButton({locale}: {locale: Locale}) {
   const [open, setOpen] = useState(false);
+  const [liftPx, setLiftPx] = useState(0);
   const isRtl = locale === "ar";
   const copy = labels[locale];
+
+  useEffect(() => {
+    const footer = document.getElementById("site-footer");
+    if (!footer) return;
+
+    const updateLift = () => {
+      const overlap = window.innerHeight - footer.getBoundingClientRect().top;
+      setLiftPx(overlap > 0 ? overlap : 0);
+    };
+
+    updateLift();
+    window.addEventListener("scroll", updateLift, {passive: true});
+    window.addEventListener("resize", updateLift);
+    return () => {
+      window.removeEventListener("scroll", updateLift);
+      window.removeEventListener("resize", updateLift);
+    };
+  }, []);
 
   const actions = [
     {
@@ -49,7 +68,10 @@ export function FabButton({locale}: {locale: Locale}) {
   ];
 
   return (
-    <div className={isRtl ? "fixed bottom-6 right-5 z-50" : "fixed bottom-6 left-5 z-50"}>
+    <div
+      className={isRtl ? "fixed right-5 z-50" : "fixed left-5 z-50"}
+      style={{bottom: `${24 + liftPx}px`}}
+    >
       <div
         className={
           open

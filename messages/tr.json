@@ -59,15 +59,9 @@
   },
   "footer": {
     "summary": "FGPOOL, toptan satış ve proje tedariki için profesyonel yüzme havuzu bileşenleri üretir.",
-    "company": "Şirket",
-    "resources": "Kaynaklar",
-    "connect": "İletişim",
-    "rights": "Tüm hakları saklıdır.",
-    "privacy": "Gizlilik Politikası",
-    "terms": "Kullanım Şartları",
-    "factory": "Üretim Teknolojisi",
-    "docs": "Teknik Dokümanlar",
-    "portal": "B2B Portal"
+    "pagesTitle": "Sayfalar",
+    "legalTitle": "Yasal Bilgilendirme",
+    "rights": "Tüm hakları saklıdır."
   },
   "fab": {
     "open": "Hızlı işlemleri aç",
