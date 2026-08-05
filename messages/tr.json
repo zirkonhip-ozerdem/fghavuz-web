@@ -12,7 +12,9 @@
     "contact": "İletişim",
     "support": "Destek",
     "quote": "Teklif Al",
-    "language": "Dil"
+    "language": "Dil",
+    "close": "Kapat",
+    "menu": "Menü"
   },
   "home": {
     "eyebrow": "Su için mühendislik",
@@ -74,5 +76,14 @@
     "whatsapp": "WhatsApp",
     "ios": "App Store",
     "android": "Google Play"
+  },
+  "topbar": {
+    "welcome": "FGPOOL'a hoş geldiniz! Havuz projeleriniz için buradayız.",
+    "phone": "Telefon",
+    "email": "E-posta",
+    "whatsapp": "WhatsApp",
+    "location": "Konum",
+    "locationText": "İstanbul, Türkiye",
+    "instagram": "Instagram"
   }
 }

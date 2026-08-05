@@ -12,7 +12,9 @@
     "contact": "اتصال",
     "support": "الدعم",
     "quote": "طلب عرض",
-    "language": "اللغة"
+    "language": "اللغة",
+    "close": "إغلاق",
+    "menu": "القائمة"
   },
   "home": {
     "eyebrow": "معدات مصممة للمياه",
@@ -74,5 +76,14 @@
     "whatsapp": "WhatsApp",
     "ios": "App Store",
     "android": "Google Play"
+  },
+  "topbar": {
+    "welcome": "مرحبًا بكم في FGPOOL! نحن هنا من أجل مشاريع مسبحكم.",
+    "phone": "الهاتف",
+    "email": "البريد الإلكتروني",
+    "whatsapp": "WhatsApp",
+    "location": "الموقع",
+    "locationText": "إسطنبول، تركيا",
+    "instagram": "إنستغرام"
   }
 }

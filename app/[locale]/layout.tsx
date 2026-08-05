@@ -6,6 +6,7 @@ import {routing, type Locale} from "@/i18n/routing";
 import {FabButton} from "@/components/layout/FabButton";
 import {Footer} from "@/components/layout/Footer";
 import {Header} from "@/components/layout/Header";
+import {TopHeader} from "@/components/layout/TopHeader";
 import "../globals.css";
 
 export function generateStaticParams() {
@@ -65,6 +66,7 @@ export default async function LocaleLayout({
     <html lang={locale} dir={dir}>
       <body>
         <NextIntlClientProvider messages={messages}>
+          <TopHeader locale={locale} />
           <Header locale={locale} />
           {children}
           <Footer locale={locale} />

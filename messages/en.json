@@ -12,7 +12,9 @@
     "contact": "Contact",
     "support": "Support",
     "quote": "Request Quote",
-    "language": "Language"
+    "language": "Language",
+    "close": "Close",
+    "menu": "Menu"
   },
   "home": {
     "eyebrow": "Equipment engineered for water",
@@ -74,5 +76,14 @@
     "whatsapp": "WhatsApp",
     "ios": "App Store",
     "android": "Google Play"
+  },
+  "topbar": {
+    "welcome": "Welcome to FGPOOL! We're here for your pool projects.",
+    "phone": "Phone",
+    "email": "Email",
+    "whatsapp": "WhatsApp",
+    "location": "Location",
+    "locationText": "Istanbul, Türkiye",
+    "instagram": "Instagram"
   }
 }
