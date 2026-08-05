@@ -1,6 +1,5 @@
-import {Mail} from "lucide-react";
-import Image from "next/image";
 import {getTranslations} from "next-intl/server";
+import {PageHeader} from "@/components/layout/PageHeader";
 import type {Locale} from "@/i18n/routing";
 
 export default async function ContactPage({
@@ -10,51 +9,83 @@ export default async function ContactPage({
 }) {
   const {locale: rawLocale} = await params;
   const locale = rawLocale as Locale;
-  const t = await getTranslations({locale, namespace: "sections"});
+  const t = await getTranslations({locale, namespace: "Contact"});
+  const navT = await getTranslations({locale, namespace: "nav"});
 
   return (
-    <main>
-      <section className="relative overflow-hidden bg-neutral-soft pt-36">
-        <div className="absolute inset-x-0 top-0 h-36 bg-white" />
-        <div className="relative mx-auto grid max-w-7xl gap-10 px-5 pb-16 sm:px-8 lg:grid-cols-[1fr_0.84fr] lg:items-end">
-          <div>
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-accent">
-              FGPOOL
-            </p>
-            <h1 className="mt-4 max-w-4xl text-5xl font-black leading-none tracking-normal text-ink sm:text-7xl">
-              {t("contactTitle")}
-            </h1>
-            <p className="mt-6 max-w-2xl text-base leading-7 text-ink/62">
-              {t("contactText")}
-            </p>
-          </div>
-          <div className="relative min-h-72 overflow-hidden rounded-lg bg-ink">
-            <Image
-              src="/assets/hero-pool.jpeg"
-              alt=""
-              fill
-              sizes="(min-width: 1024px) 45vw, 100vw"
-              className="object-cover opacity-88"
-            />
-          </div>
-        </div>
-      </section>
+    <main className="bg-gray-50 min-h-screen pb-16">
+      <PageHeader
+        locale={locale}
+        title={t("title")}
+        description={t("description")}
+        breadcrumbs={[
+          {label: navT("home"), href: "/"},
+          {label: navT("contact")},
+        ]}
+      />
 
-      <section className="bg-white py-16">
-        <div className="mx-auto grid max-w-6xl gap-5 px-5 sm:px-8 md:grid-cols-3">
-          {[
-            ["Sales", "sales@fgpool.com"],
-            ["Support", "support@fgpool.com"],
-            ["Factory", "Istanbul Industrial Zone"],
-          ].map(([title, text]) => (
-            <article key={title} className="rounded-lg border border-ink/8 bg-neutral-soft p-7">
-              <Mail className="size-8 text-accent" aria-hidden="true" />
-              <h2 className="mt-6 text-2xl font-black text-ink">{title}</h2>
-              <p className="mt-3 text-sm leading-6 text-ink/58">{text}</p>
-            </article>
-          ))}
+      <div className="container mx-auto px-4 max-w-7xl py-16">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-stretch">
+          
+          <div className="lg:col-span-1 flex flex-col gap-5 h-full">
+            
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+              <h3 className="text-lg font-bold text-slate-900 mb-3">{t("headOffice")}</h3>
+              <p className="text-gray-600 mb-2 text-sm"><strong>{t("addressLabel")}</strong> {t("addressValue")}</p>
+              <p className="text-gray-600 mb-2 text-sm"><strong>{t("phoneLabel")}</strong> +90 (242) 555 01 23</p>
+              <p className="text-gray-600 text-sm"><strong>{t("emailLabel")}</strong> info@fgpool.com</p>
+            </div>
+
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+              <h3 className="text-lg font-bold text-slate-900 mb-3">{t("salesSupport")}</h3>
+              <p className="text-gray-600 mb-2 text-sm"><strong>{t("globalSales")}</strong> sales@fgpool.com</p>
+              <p className="text-gray-600 text-sm"><strong>{t("techSupport")}</strong> support@fgpool.com</p>
+            </div>
+
+            <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden flex-1 min-h-[220px]">
+              <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3125.1052601955173!2d27.2372439!3d38.4390638!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14b962cd679267bd%3A0xc665cb55294e50d!2sBornova%2C%20%C4%B0zmir!5e0!3m2!1str!2str!4v1700000000000!5m2!1str!2str" 
+                className="w-full h-full"
+                style={{ border: 0 }} 
+                allowFullScreen={false} 
+                loading="lazy" 
+                referrerPolicy="no-referrer-when-downgrade">
+              </iframe>
+            </div>
+            
+          </div>
+
+          <div className="lg:col-span-2 bg-white p-8 md:p-10 rounded-lg shadow-sm border border-gray-100 flex flex-col h-full">
+            <h2 className="text-2xl font-bold text-slate-900 mb-6">{t("formTitle")}</h2>
+            
+            <form className="flex flex-col flex-1">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">{t("nameLabel")}</label>
+                  <input type="text" id="name" className="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-900" placeholder={t("namePlaceholder")} />
+                </div>
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">{t("emailFormLabel")}</label>
+                  <input type="email" id="email" className="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-900" placeholder={t("emailPlaceholder")} />
+                </div>
+              </div>
+
+              <div className="flex flex-col flex-1 mb-6">
+                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">{t("messageLabel")}</label>
+                <textarea id="message" className="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-900 resize-none flex-1" placeholder={t("messagePlaceholder")}></textarea>
+              </div>
+
+              <div className="mt-auto">
+                <button type="button" className="bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-8 rounded transition-colors duration-300 w-full sm:w-auto">
+                  {t("submitButton")}
+                </button>
+              </div>
+            </form>
+            
+          </div>
+          
         </div>
-      </section>
+      </div>
     </main>
   );
 }

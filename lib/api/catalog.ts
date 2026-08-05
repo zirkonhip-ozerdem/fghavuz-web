@@ -9,6 +9,8 @@ export type ProductCategory = {
   name: LocalizedText;
   kicker: LocalizedText;
   description: LocalizedText;
+  /** Admin panel "öne çıkar" flag — only categories with this set to true surface in the homepage showcase. */
+  featured: boolean;
 };
 
 export type Advantage = {
@@ -25,11 +27,21 @@ export type Project = {
   title: LocalizedText;
 };
 
+export type CatalogDocument = {
+  id: string;
+  format: "PDF";
+  size: string;
+  href: string;
+  title: LocalizedText;
+  description: LocalizedText;
+};
+
 const categories: ProductCategory[] = [
   {
     id: "grating",
     slug: "interlocking-grating",
     image: "/assets/product-grating.jpeg",
+    featured: true,
     kicker: {
       en: "Grating",
       tr: "Izgara",
@@ -50,6 +62,7 @@ const categories: ProductCategory[] = [
     id: "main-drain",
     slug: "high-flow-main-drain",
     image: "/assets/product-drain.jpeg",
+    featured: true,
     kicker: {
       en: "Channel",
       tr: "Kanal",
@@ -70,6 +83,7 @@ const categories: ProductCategory[] = [
     id: "inlets",
     slug: "wall-return-inlets",
     image: "/assets/product-inlets.jpeg",
+    featured: false,
     kicker: {
       en: "Fittings",
       tr: "Nozullar",
@@ -90,6 +104,7 @@ const categories: ProductCategory[] = [
     id: "linear",
     slug: "linear-edge-grating",
     image: "/assets/product-grating.jpeg",
+    featured: true,
     kicker: {
       en: "Surface",
       tr: "Yüzey",
@@ -182,10 +197,98 @@ const projects: Project[] = [
       ar: "مركز City المائي",
     },
   },
+  {
+    id: "riviera-resort",
+    image: "/assets/azure-project.jpeg",
+    location: {
+      en: "France",
+      tr: "Fransa",
+      ar: "فرنسا",
+    },
+    title: {
+      en: "Riviera Resort & Spa",
+      tr: "Riviera Resort & Spa",
+      ar: "منتجع ريفييرا آند سبا",
+    },
+  },
+  {
+    id: "marina-bay",
+    image: "/assets/hero-pool.jpeg",
+    location: {
+      en: "United Arab Emirates",
+      tr: "Birleşik Arap Emirlikleri",
+      ar: "الإمارات العربية المتحدة",
+    },
+    title: {
+      en: "Marina Bay Aquatic Park",
+      tr: "Marina Bay Aquatic Park",
+      ar: "منتزه Marina Bay المائي",
+    },
+  },
+];
+
+const catalogDocuments: CatalogDocument[] = [
+  {
+    id: "full-catalog",
+    format: "PDF",
+    size: "24.6 MB",
+    href: "/catalogs/fgpool-full-catalog.pdf",
+    title: {
+      en: "Complete Product Catalog",
+      tr: "Tam Ürün Kataloğu",
+      ar: "الكتالوج الكامل للمنتجات",
+    },
+    description: {
+      en: "Full product range with dimensions, materials and finish options for every series.",
+      tr: "Tüm seriler için ölçüler, malzemeler ve yüzey seçenekleriyle komple ürün gamı.",
+      ar: "التشكيلة الكاملة للمنتجات مع الأبعاد والمواد وخيارات التشطيب لكل سلسلة.",
+    },
+  },
+  {
+    id: "overflow-grating",
+    format: "PDF",
+    size: "8.9 MB",
+    href: "/catalogs/overflow-grating-systems.pdf",
+    title: {
+      en: "Overflow Grating Systems",
+      tr: "Taşma Izgara Sistemleri",
+      ar: "أنظمة شبكات الفيض",
+    },
+    description: {
+      en: "Interlocking and linear grating profiles with load ratings and installation details.",
+      tr: "Yük değerleri ve montaj detaylarıyla geçmeli ve lineer ızgara profilleri.",
+      ar: "مقاطع شبكات متداخلة وخطية مع معدلات التحميل وتفاصيل التركيب.",
+    },
+  },
+  {
+    id: "drainage-suction",
+    format: "PDF",
+    size: "6.7 MB",
+    href: "/catalogs/drainage-suction-systems.pdf",
+    title: {
+      en: "Main Drain & Suction Systems",
+      tr: "Ana Drenaj ve Emme Sistemleri",
+      ar: "أنظمة التصريف الرئيسي والشفط",
+    },
+    description: {
+      en: "Anti-vortex drains and suction fittings rated for public and commercial pools.",
+      tr: "Kamusal ve ticari havuzlar için anti-vorteks drenaj ve emme ekipmanları.",
+      ar: "مصارف مضادة للدوامة ووصلات شفط مصنفة للمسابح العامة والتجارية.",
+    },
+  },
 ];
 
 export async function getFeaturedCategories() {
   return categories;
+}
+
+/** Homepage showcase feed — only categories flagged "öne çıkar" (featured) in the admin panel. */
+export async function getShowcaseCategories() {
+  return categories.filter((category) => category.featured);
+}
+
+export async function getCatalogDocuments() {
+  return catalogDocuments;
 }
 
 export async function getAdvantages() {

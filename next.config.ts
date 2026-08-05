@@ -6,6 +6,7 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     unoptimized: process.env.NODE_ENV === "development",
   },
+  allowedDevOrigins: ["192.168.1.83"],
 };
 
 const withNextIntl = createNextIntlPlugin("./i18n/request.ts");

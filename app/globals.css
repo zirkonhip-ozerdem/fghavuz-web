@@ -20,7 +20,10 @@
   --color-accent-dark: var(--accent-dark);
   --color-neutral-soft: var(--neutral-soft);
   --color-ink: var(--ink);
-  --font-sans: Arial, Helvetica, sans-serif;
+  --font-sans: var(--font-inter), Arial, Helvetica, sans-serif;
+  --font-heading: var(--font-manrope), var(--font-inter), Arial, Helvetica, sans-serif;
+  --animate-wave-slow: wave 14s linear infinite;
+  --animate-wave-fast: wave 9s linear infinite;
 }
 
 * {
@@ -36,8 +39,17 @@ body {
   min-height: 100vh;
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-inter), Arial, Helvetica, sans-serif;
   text-rendering: geometricPrecision;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-manrope), var(--font-inter), Arial, Helvetica, sans-serif;
 }
 
 a {
@@ -56,4 +68,26 @@ textarea {
 
 [dir="rtl"] .rtl\:rotate-180 {
   transform: rotate(180deg);
+}
+
+@keyframes wave {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes card-sway {
+  0%,
+  100% {
+    transform: translateY(-4px) translateX(0);
+  }
+  25% {
+    transform: translateY(-4px) translateX(6px);
+  }
+  75% {
+    transform: translateY(-4px) translateX(-6px);
+  }
 }
