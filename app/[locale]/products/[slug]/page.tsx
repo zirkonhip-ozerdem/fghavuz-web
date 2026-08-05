@@ -24,7 +24,7 @@ export default async function ProductDetailPage({
   const related = categories.filter((category) => category.id !== product.id).slice(0, 3);
 
   return (
-    <main className="bg-white pt-28">
+    <main className="bg-white pt-32">
       <section className="mx-auto grid max-w-7xl gap-10 px-5 py-14 sm:px-8 lg:grid-cols-[0.92fr_1.08fr] lg:items-center">
         <div className="relative aspect-[1.05] overflow-hidden rounded-lg bg-neutral-soft">
           <Image

@@ -119,7 +119,7 @@ export function Header({locale}: {locale: Locale}) {
 
   return (
     <>
-      <nav className="fixed top-0 w-full z-50 h-20 bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-sm transition-all duration-500">
+      <nav className="fixed top-9 w-full z-50 h-20 bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-sm transition-all duration-500">
         <div className="flex h-full items-center justify-between px-5 md:px-8 max-w-7xl mx-auto">
           <Logo locale={locale} />
 
@@ -205,7 +205,7 @@ export function Header({locale}: {locale: Locale}) {
       </nav>
 
       <div
-        className={`fixed inset-0 top-20 z-40 bg-ink/40 backdrop-blur-sm transition-opacity duration-300 ${
+        className={`fixed inset-0 top-[7.25rem] z-40 bg-ink/40 backdrop-blur-sm transition-opacity duration-300 ${
           panelOpen ? "opacity-100" : "pointer-events-none opacity-0"
         }`}
         onClick={closePanels}
@@ -214,7 +214,7 @@ export function Header({locale}: {locale: Locale}) {
 
       {/* Mobile nav menu */}
       <div
-        className={`md:hidden fixed inset-x-0 top-20 z-50 max-h-[calc(100vh-5rem)] overflow-y-auto rounded-b-3xl bg-white shadow-[0_24px_60px_rgba(17,17,20,0.18)] transition-all duration-200 ${
+        className={`md:hidden fixed inset-x-0 top-[7.25rem] z-50 max-h-[calc(100vh-7.25rem)] overflow-y-auto rounded-b-3xl bg-white shadow-[0_24px_60px_rgba(17,17,20,0.18)] transition-all duration-200 ${
           mobileOpen
             ? "translate-y-0 opacity-100"
             : "pointer-events-none -translate-y-2 opacity-0"
