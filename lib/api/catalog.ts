@@ -9,6 +9,8 @@ export type ProductCategory = {
   name: LocalizedText;
   kicker: LocalizedText;
   description: LocalizedText;
+  /** Admin panel "öne çıkar" flag — only categories with this set to true surface in the homepage showcase. */
+  featured: boolean;
 };
 
 export type Advantage = {
@@ -30,6 +32,7 @@ const categories: ProductCategory[] = [
     id: "grating",
     slug: "interlocking-grating",
     image: "/assets/product-grating.jpeg",
+    featured: true,
     kicker: {
       en: "Grating",
       tr: "Izgara",
@@ -50,6 +53,7 @@ const categories: ProductCategory[] = [
     id: "main-drain",
     slug: "high-flow-main-drain",
     image: "/assets/product-drain.jpeg",
+    featured: true,
     kicker: {
       en: "Channel",
       tr: "Kanal",
@@ -70,6 +74,7 @@ const categories: ProductCategory[] = [
     id: "inlets",
     slug: "wall-return-inlets",
     image: "/assets/product-inlets.jpeg",
+    featured: false,
     kicker: {
       en: "Fittings",
       tr: "Nozullar",
@@ -90,6 +95,7 @@ const categories: ProductCategory[] = [
     id: "linear",
     slug: "linear-edge-grating",
     image: "/assets/product-grating.jpeg",
+    featured: true,
     kicker: {
       en: "Surface",
       tr: "Yüzey",
@@ -182,10 +188,43 @@ const projects: Project[] = [
       ar: "مركز City المائي",
     },
   },
+  {
+    id: "riviera-resort",
+    image: "/assets/azure-project.jpeg",
+    location: {
+      en: "France",
+      tr: "Fransa",
+      ar: "فرنسا",
+    },
+    title: {
+      en: "Riviera Resort & Spa",
+      tr: "Riviera Resort & Spa",
+      ar: "منتجع ريفييرا آند سبا",
+    },
+  },
+  {
+    id: "marina-bay",
+    image: "/assets/hero-pool.jpeg",
+    location: {
+      en: "United Arab Emirates",
+      tr: "Birleşik Arap Emirlikleri",
+      ar: "الإمارات العربية المتحدة",
+    },
+    title: {
+      en: "Marina Bay Aquatic Park",
+      tr: "Marina Bay Aquatic Park",
+      ar: "منتزه Marina Bay المائي",
+    },
+  },
 ];
 
 export async function getFeaturedCategories() {
   return categories;
+}
+
+/** Homepage showcase feed — only categories flagged "öne çıkar" (featured) in the admin panel. */
+export async function getShowcaseCategories() {
+  return categories.filter((category) => category.featured);
 }
 
 export async function getAdvantages() {

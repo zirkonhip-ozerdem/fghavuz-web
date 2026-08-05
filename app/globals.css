@@ -57,3 +57,16 @@ textarea {
 [dir="rtl"] .rtl\:rotate-180 {
   transform: rotate(180deg);
 }
+
+@keyframes card-sway {
+  0%,
+  100% {
+    transform: translateY(-4px) translateX(0);
+  }
+  25% {
+    transform: translateY(-4px) translateX(6px);
+  }
+  75% {
+    transform: translateY(-4px) translateX(-6px);
+  }
+}
