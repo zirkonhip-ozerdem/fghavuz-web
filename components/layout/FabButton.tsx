@@ -1,6 +1,6 @@
 "use client";
 
-import {MessageCircle, Smartphone, Store, X} from "lucide-react";
+import {MessageCircle, Smartphone, Store, X, Headset, BookOpen} from "lucide-react";
 import {useState} from "react";
 import type {Locale} from "@/i18n/routing";
 
@@ -10,18 +10,24 @@ const labels = {
     whatsapp: "WhatsApp",
     ios: "App Store",
     android: "Google Play",
+    contact: "Contact & Support",
+    catalog: "Catalog",
   },
   tr: {
     open: "Hızlı işlemleri aç",
     whatsapp: "WhatsApp",
     ios: "App Store",
     android: "Google Play",
+    contact: "İletişim ve Destek",
+    catalog: "Katalog",
   },
   ar: {
     open: "فتح الإجراءات السريعة",
     whatsapp: "WhatsApp",
     ios: "App Store",
     android: "Google Play",
+    contact: "الاتصال والدعم",
+    catalog: "فهرس",
   },
 } satisfies Record<Locale, Record<string, string>>;
 
@@ -31,6 +37,16 @@ export function FabButton({locale}: {locale: Locale}) {
   const copy = labels[locale];
 
   const actions = [
+    {
+      label: copy.contact,
+      href: `/${locale}/contact`,
+      icon: Headset,
+    },
+    {
+      label: copy.catalog,
+      href: `/${locale}/catalog`,
+      icon: BookOpen,
+    },
     {
       label: copy.whatsapp,
       href: "https://wa.me/902120000000",
