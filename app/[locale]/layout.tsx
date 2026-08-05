@@ -44,6 +44,13 @@ export async function generateMetadata({
     title: t("title"),
     description: t("description"),
     metadataBase: new URL("https://fgpool.example"),
+    icons: {
+      icon: [
+        {url: "/favicon.png", type: "image/png"},
+      ],
+      shortcut: "/favicon.png",
+      apple: "/favicon.png",
+    },
     alternates: {
       canonical: `/${locale}`,
       languages,
