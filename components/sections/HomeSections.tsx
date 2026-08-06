@@ -48,7 +48,7 @@ export async function EngineeredComponents({
         <Link
           href="/catalog"
           locale={locale}
-          className="hidden md:inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.12em] text-[#b52330] transition hover:text-[#410007]"
+          className="inline-flex items-center gap-2 self-start text-sm font-semibold uppercase tracking-[0.12em] text-[#b52330] transition hover:text-[#410007]"
         >
           {t("catalogLink")}
           <ArrowRight className="size-4 rtl:rotate-180" aria-hidden="true" />
@@ -87,8 +87,8 @@ export async function CatalogShowcase({locale}: {locale: Locale}) {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_14%_18%,rgba(37,99,235,0.25),transparent_38%),radial-gradient(circle_at_88%_86%,rgba(56,189,248,0.28),transparent_38%)]" />
           <div className="absolute inset-0 opacity-[0.05] [background-image:linear-gradient(rgba(255,255,255,0.7)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.7)_1px,transparent_1px)] [background-size:42px_42px]" />
 
-          <div className="relative grid gap-10 lg:grid-cols-[1fr_1.05fr] lg:items-center">
-            <div>
+          <div className="relative grid grid-cols-1 gap-10 lg:grid-cols-[1fr_1.05fr] lg:items-center">
+            <div className="min-w-0">
               <p className="text-xs font-black uppercase tracking-[0.2em] text-sky-400">
                 {t("catalogEyebrow")}
               </p>
@@ -109,7 +109,7 @@ export async function CatalogShowcase({locale}: {locale: Locale}) {
               </Link>
             </div>
 
-            <div className="grid gap-3">
+            <div className="min-w-0 grid grid-cols-1 gap-3">
               {documents.map((doc) => (
                 <div
                   key={doc.title}
@@ -171,7 +171,7 @@ export async function FeaturedBlogSection({
           <Link
             href="/blog"
             locale={locale}
-            className="hidden md:inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-[0.12em] text-[#b52330] transition hover:text-[#410007]"
+            className="inline-flex items-center gap-2 self-start text-sm font-semibold uppercase tracking-[0.12em] text-[#b52330] transition hover:text-[#410007]"
           >
             {t("blogSectionLink")}
             <ArrowRight className="size-4 rtl:rotate-180" aria-hidden="true" />
