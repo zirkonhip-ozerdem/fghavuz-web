@@ -70,6 +70,15 @@ textarea {
   transform: rotate(180deg);
 }
 
+@keyframes topbar-marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
 @keyframes wave {
   0% {
     transform: translateX(0);

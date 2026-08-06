@@ -141,7 +141,7 @@ export function ReferencesSlider({
             <article
               key={`${project.id}-${index}`}
               data-card
-              className="relative min-h-80 w-[85%] shrink-0 overflow-hidden rounded-3xl bg-[#132238] text-white shadow-[0_32px_64px_rgba(19,34,56,0.12)] sm:w-[48%] lg:w-[31.5%]"
+              className="relative min-h-64 w-[46%] shrink-0 overflow-hidden rounded-3xl bg-[#132238] text-white shadow-[0_32px_64px_rgba(19,34,56,0.12)] sm:min-h-80 sm:w-[48%] lg:w-[31.5%]"
             >
               <Image
                 src={project.image}

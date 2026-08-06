@@ -55,14 +55,14 @@ export function launchWaterDrops(count = 130) {
     x: Math.random() * width,
     y: -20 - Math.random() * height * 0.4,
     vx: (Math.random() - 0.5) * 1,
-    vy: Math.random() * 1 + 0.5,
+    vy: Math.random() * 0.5 + 0.25,
     size: Math.random() * 7 + 6,
     color: COLORS[Math.floor(Math.random() * COLORS.length)],
-    gravity: 0.05 + Math.random() * 0.03,
+    gravity: 0.026 + Math.random() * 0.015,
     drag: 0.996,
   }));
 
-  const duration = 5200;
+  const duration = 6800;
   const start = performance.now();
   let frameId: number;
 
