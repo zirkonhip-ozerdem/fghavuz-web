@@ -62,7 +62,7 @@ export default function ClientMarquee({
 
   return (
     <div
-      className="-mx-5 px-5 overflow-hidden lg:mx-0 lg:px-0"
+      className="overflow-hidden px-5 sm:px-8 lg:px-0"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
@@ -77,21 +77,21 @@ export default function ClientMarquee({
             key={`${category.id}-${idx}`}
             href={`/products/${category.slug}`}
             locale={locale}
-            className="group w-[340px] rounded-3xl border border-[#8e706f]/30 bg-[#fcf9f8] p-4 transition-all duration-300 cursor-pointer"
+            className="group w-[78vw] max-w-[320px] shrink-0 cursor-pointer rounded-2xl border border-[#8e706f]/30 bg-[#fcf9f8] p-3 transition-all duration-300 sm:w-[320px] sm:rounded-3xl sm:p-4"
           >
-            <div className="relative h-28 overflow-hidden rounded-xl bg-[#f0eded] mb-4">
+            <div className="relative mb-4 aspect-[4/3] overflow-hidden rounded-xl bg-[#f0eded] sm:h-28 sm:aspect-auto">
               <Image
                 src={category.image}
                 alt={category.name[locale]}
                 fill
-                sizes="(min-width: 1024px) 25vw, 50vw"
+                sizes="(min-width: 1024px) 25vw, (min-width: 640px) 320px, 78vw"
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
             </div>
             <span className="font-semibold uppercase tracking-[0.18em] text-[#515f78] text-[0.65rem]">
               {category.kicker[locale]}
             </span>
-            <h3 className="mt-1 text-lg font-bold text-ink">
+            <h3 className="mt-1 text-base font-bold leading-snug text-ink sm:text-lg">
               {category.name[locale]}
             </h3>
           </Link>

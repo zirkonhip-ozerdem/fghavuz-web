@@ -144,7 +144,7 @@ export function Header({locale}: {locale: Locale}) {
             <button
               type="button"
               onClick={openSearch}
-              className="hidden h-10 w-10 place-items-center rounded-full text-slate-700 transition-colors hover:bg-slate-100 lg:grid"
+              className="grid h-10 w-10 place-items-center rounded-full text-slate-700 transition-colors hover:bg-slate-100"
               aria-label={tHome("searchButton")}
               aria-expanded={searchOpen}
             >

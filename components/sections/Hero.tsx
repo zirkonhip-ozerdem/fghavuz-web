@@ -22,7 +22,7 @@ export async function Hero({
       <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(247,245,242,0.95)_0%,rgba(247,245,242,0.74)_44%,rgba(17,17,20,0.22)_100%)]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_28%,rgba(232,72,58,0.20),transparent_34%)]" />
 
-      <div className="relative mx-auto grid min-h-[100svh] max-w-7xl gap-6 px-5 pb-10 pt-18 sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-8 lg:pb-14 lg:pt-20">
+      <div className="relative mx-auto grid min-h-[100svh] max-w-7xl gap-6 px-5 pb-10 pt-[9rem] sm:px-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-center lg:gap-8 lg:pb-14">
         <div className="min-w-0 max-w-3xl">
           <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-ink/58 sm:text-sm">
             {t("brandLine")}

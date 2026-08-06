@@ -36,6 +36,7 @@ export function FabButton({locale}: {locale: Locale}) {
   const [open, setOpen] = useState(false);
   const [liftPx, setLiftPx] = useState(0);
   const hasCelebratedRef = useRef(false);
+  const containerRef = useRef<HTMLDivElement>(null);
   const isRtl = locale === "ar";
   const copy = labels[locale];
 
@@ -56,6 +57,19 @@ export function FabButton({locale}: {locale: Locale}) {
       window.removeEventListener("resize", updateLift);
     };
   }, []);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const handlePointerDown = (event: PointerEvent) => {
+      if (!containerRef.current?.contains(event.target as Node)) {
+        setOpen(false);
+      }
+    };
+
+    document.addEventListener("pointerdown", handlePointerDown);
+    return () => document.removeEventListener("pointerdown", handlePointerDown);
+  }, [open]);
 
   const actions = [
     {
@@ -100,6 +114,7 @@ export function FabButton({locale}: {locale: Locale}) {
 
   return (
     <div
+      ref={containerRef}
       className={isRtl ? "fixed right-5 z-50" : "fixed left-5 z-50"}
       style={{bottom: `${24 + liftPx}px`}}
     >

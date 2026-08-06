@@ -30,7 +30,7 @@ export async function TopHeader({locale}: {locale: Locale}) {
   return (
     <div className="fixed inset-x-0 top-0 z-50 h-9 bg-[#c9ebf3]">
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between gap-4 px-5 sm:px-8">
-        <div className="flex items-center gap-4 ms-3 sm:ms-6">
+        <div className="flex items-center gap-2 ms-1 sm:gap-4 sm:ms-6">
           <a href={CONTACT.phoneHref} aria-label={t("phone")} className={linkClassName}>
             <Phone className="size-4" aria-hidden="true" />
           </a>
@@ -57,12 +57,14 @@ export async function TopHeader({locale}: {locale: Locale}) {
           </a>
         </div>
 
-        <p
-          key={locale}
-          className="hidden flex-1 truncate text-center text-sm font-bold text-ink/80 [animation:topbar-welcome_5s_ease-in-out_forwards] sm:block"
-        >
-          {t("welcome")}
-        </p>
+        <div className="min-w-0 flex-1 overflow-hidden sm:overflow-visible">
+          <p
+            key={locale}
+            className="inline-block whitespace-nowrap text-[11px] font-bold text-ink/80 [animation:topbar-marquee_12s_linear_infinite] sm:block sm:w-full sm:truncate sm:text-center sm:text-sm sm:[animation:topbar-welcome_5s_ease-in-out_forwards]"
+          >
+            {t("welcome")}
+          </p>
+        </div>
 
         <div className="flex items-center gap-3">
           <a href={CONTACT.instagramHref} aria-label={t("instagram")} className={linkClassName}>
