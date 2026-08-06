@@ -51,8 +51,8 @@ export default async function ProductDetailPage({
         ]}
       />
 
-      <div className="container mx-auto px-4 max-w-7xl py-16">
-        <div className="mb-8">
+        <div className="container mx-auto px-4 max-w-7xl py-16 relative z-[999]">
+        <div className="mb-8 relative z-50">
           <Link
             href="/products"
             locale={locale}
