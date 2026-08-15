@@ -38,8 +38,8 @@ export function Header({locale}: {locale: Locale}) {
       : pathname === `/${locale}${href}` || pathname.startsWith(`/${locale}${href}/`);
 
   useEffect(() => {
-    getFeaturedCategories().then(setCategories);
-  }, []);
+    getFeaturedCategories(locale).then(setCategories);
+  }, [locale]);
 
   useEffect(() => {
     if (searchOpen) {
@@ -80,7 +80,7 @@ export function Header({locale}: {locale: Locale}) {
 
     return categories
       .filter((category) =>
-        [category.name[locale], category.kicker[locale], category.slug]
+        [category.name, category.description, category.slug]
           .join(" ")
           .toLocaleLowerCase(locale)
           .includes(normalized),
@@ -319,10 +319,10 @@ export function Header({locale}: {locale: Locale}) {
                   className="block w-full border-b border-ink/8 px-4 py-3 text-start transition last:border-b-0 hover:bg-neutral-soft"
                 >
                   <span className="block text-sm font-bold text-ink">
-                    {category.name[locale]}
+                    {category.name}
                   </span>
                   <span className="block text-xs text-ink/55">
-                    {category.description[locale]}
+                    {category.description}
                   </span>
                 </button>
               ))}

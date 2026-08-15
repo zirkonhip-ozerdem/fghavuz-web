@@ -7,12 +7,14 @@ import {
   PencilRuler,
   Send,
 } from "lucide-react";
+import type {Metadata} from "next";
 import {getTranslations} from "next-intl/server";
 import {Link} from "@/i18n/navigation";
 import {PageHeader} from "@/components/layout/PageHeader";
 import {Reveal} from "@/components/ui/Reveal";
 import type {Locale} from "@/i18n/routing";
 import {getCatalogDocuments} from "@/lib/api/catalog";
+import {getSeoPage, toMetadata} from "@/lib/api/seo";
 
 const formats = [
   {icon: FileText, title: "catalogFormatPdfTitle", text: "catalogFormatPdfText"},
@@ -26,6 +28,21 @@ const steps = [
   {icon: CheckCircle2, title: "catalogStep3Title", text: "catalogStep3Text"},
 ] as const;
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{locale: string}>;
+}): Promise<Metadata> {
+  const {locale: rawLocale} = await params;
+  const locale = rawLocale as Locale;
+  const [seo, t] = await Promise.all([
+    getSeoPage("catalog", locale),
+    getTranslations({locale, namespace: "sections"}),
+  ]);
+
+  return toMetadata(seo, {title: t("catalogTitle"), description: t("catalogText")});
+}
+
 export default async function CatalogPage({
   params,
 }: {
@@ -35,7 +52,7 @@ export default async function CatalogPage({
   const locale = rawLocale as Locale;
   const t = await getTranslations({locale, namespace: "sections"});
   const navT = await getTranslations({locale, namespace: "nav"});
-  const documents = await getCatalogDocuments();
+  const documents = await getCatalogDocuments(locale);
 
   return (
     <main>
@@ -65,9 +82,9 @@ export default async function CatalogPage({
               <Reveal key={doc.id} delay={index * 100}>
                 <article className="flex h-full flex-col rounded-lg border border-ink/8 bg-neutral-soft p-6 transition hover:-translate-y-1 hover:border-primary/18 hover:bg-white hover:shadow-[0_18px_44px_rgba(17,17,20,0.10)]">
                   <FileText className="size-8 text-accent" aria-hidden="true" />
-                  <h3 className="mt-5 text-lg font-extrabold text-ink">{doc.title[locale]}</h3>
+                  <h3 className="mt-5 text-lg font-extrabold text-ink">{doc.title}</h3>
                   <p className="mt-2 flex-1 text-sm leading-6 text-ink/58">
-                    {doc.description[locale]}
+                    {doc.description}
                   </p>
                   <div className="mt-5 flex items-center justify-between border-t border-ink/8 pt-4">
                     <span className="text-xs font-bold uppercase tracking-[0.1em] text-ink/40">

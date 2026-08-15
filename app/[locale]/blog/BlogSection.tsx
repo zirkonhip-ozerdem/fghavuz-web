@@ -1,20 +1,23 @@
 "use client";
 
 import Image from "next/image";
+import {useTranslations} from "next-intl";
 import {useMemo, useState, useEffect, type ReactNode} from "react";
 import {ChevronLeft, ChevronRight} from "lucide-react";
 import {Link} from "@/i18n/navigation";
 import type {Locale} from "@/i18n/routing";
-import {BlogArticles, type BlogArticle} from "./BlogArticles";
+import type {BlogCategory, BlogPost} from "@/lib/api/blog";
+import {BlogArticles} from "./BlogArticles";
 import {BlogFilters} from "./BlogFilters";
 
 const ARTICLES_PER_PAGE = 4;
+const ALL_FILTER = "all";
 
 export function BlogSection({
   locale,
-  featuredArticle,
-  articles,
-  filters,
+  posts,
+  categories,
+  allLabel,
   placeholder,
   noResultsText,
   featuredTag,
@@ -24,9 +27,9 @@ export function BlogSection({
   sidebarChildren,
 }: {
   locale: Locale;
-  featuredArticle: BlogArticle;
-  articles: BlogArticle[];
-  filters: readonly {id: string; label: string}[];
+  posts: BlogPost[];
+  categories: BlogCategory[];
+  allLabel: string;
   placeholder: string;
   noResultsText: string;
   featuredTag: string;
@@ -35,48 +38,57 @@ export function BlogSection({
   nextPageLabel: string;
   sidebarChildren?: ReactNode;
 }) {
-  const defaultFilter = filters[0]?.id ?? "blogFilterAll";
-  const [selectedFilter, setSelectedFilter] = useState(defaultFilter);
+  const t = useTranslations("sections");
+  const readTimeLabel = (minutes: number) => t("blogReadTime", {minutes});
+
+  const filters = useMemo(
+    () => [
+      {id: ALL_FILTER, label: allLabel},
+      ...categories.map((category) => ({id: category.slug, label: category.name})),
+    ],
+    [categories, allLabel],
+  );
+
+  const [selectedFilter, setSelectedFilter] = useState(ALL_FILTER);
   const [query, setQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [randomFeaturedArticle, setRandomFeaturedArticle] = useState<BlogArticle | null>(null);
+  const [randomFeaturedPost, setRandomFeaturedPost] = useState<BlogPost | null>(null);
 
-  // Random featured article - only on client side
+  // Random featured post - only on client side
   useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * articles.length);
-    setRandomFeaturedArticle(articles[randomIndex] || featuredArticle);
-  }, [articles, featuredArticle]);
+    if (posts.length === 0) return;
+    const randomIndex = Math.floor(Math.random() * posts.length);
+    setRandomFeaturedPost(posts[randomIndex] ?? null);
+  }, [posts]);
 
-  const filteredArticles = useMemo(
+  const filteredPosts = useMemo(
     () =>
-      articles.filter((article) => {
+      posts.filter((post) => {
         const matchesFilter =
-          selectedFilter === "blogFilterAll" || article.filter === selectedFilter;
+          selectedFilter === ALL_FILTER || post.category?.slug === selectedFilter;
         const matchesQuery =
           query.trim().length === 0 ||
-          [article.title, article.summary, article.category, article.details]
+          [post.title, post.excerpt, post.category?.name ?? ""]
             .join(" ")
-            .toLowerCase()
-            .includes(query.trim().toLowerCase());
+            .toLocaleLowerCase(locale)
+            .includes(query.trim().toLocaleLowerCase(locale));
         return matchesFilter && matchesQuery;
       }),
-    [articles, selectedFilter, query]
+    [posts, selectedFilter, query, locale],
   );
 
   // Only show the featured hero while browsing the default, unfiltered view -
   // as soon as the visitor filters or searches, the list should reflect that directly.
-  const showFeatured = selectedFilter === defaultFilter && query.trim().length === 0;
+  const showFeatured = selectedFilter === ALL_FILTER && query.trim().length === 0;
 
-  const listArticles = showFeatured
-    ? filteredArticles.filter(
-        (article) => article.id !== (randomFeaturedArticle?.id || featuredArticle.id)
-      )
-    : filteredArticles;
+  const listPosts = showFeatured
+    ? filteredPosts.filter((post) => post.id !== randomFeaturedPost?.id)
+    : filteredPosts;
 
-  const totalPages = Math.ceil(listArticles.length / ARTICLES_PER_PAGE);
-  const paginatedArticles = listArticles.slice(
+  const totalPages = Math.ceil(listPosts.length / ARTICLES_PER_PAGE);
+  const paginatedPosts = listPosts.slice(
     (currentPage - 1) * ARTICLES_PER_PAGE,
-    currentPage * ARTICLES_PER_PAGE
+    currentPage * ARTICLES_PER_PAGE,
   );
 
   const handleFilterChange = (id: string) => {
@@ -91,22 +103,22 @@ export function BlogSection({
 
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({top: 0, behavior: "smooth"});
   };
 
   return (
     <>
       <div className="space-y-8">
-        {showFeatured && randomFeaturedArticle && (
+        {showFeatured && randomFeaturedPost && (
           <Link
-            href={`/blog/${randomFeaturedArticle.id}`}
+            href={`/blog/${randomFeaturedPost.slug}`}
             locale={locale}
             className="group block overflow-hidden rounded-[1.5rem] bg-white shadow-[0_25px_80px_rgba(17,17,20,0.12)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_30px_90px_rgba(17,17,20,0.15)]"
           >
             <div className="relative h-[420px] overflow-hidden bg-[#f5f3f0]">
               <Image
-                src={randomFeaturedArticle.imageSrc}
-                alt={randomFeaturedArticle.title}
+                src={randomFeaturedPost.image}
+                alt={randomFeaturedPost.title}
                 fill
                 priority
                 loading="eager"
@@ -119,18 +131,22 @@ export function BlogSection({
                   {featuredTag}
                 </span>
                 <h2 className="mt-4 max-w-2xl text-3xl font-black leading-tight text-white sm:text-4xl">
-                  {randomFeaturedArticle.title}
+                  {randomFeaturedPost.title}
                 </h2>
                 <p className="mt-3 max-w-xl text-sm leading-6 text-white/80 sm:text-base">
-                  {randomFeaturedArticle.summary}
+                  {randomFeaturedPost.excerpt}
                 </p>
                 <div className="mt-6 flex flex-wrap gap-3">
-                  <span className="inline-block rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-white">
-                    {randomFeaturedArticle.category}
-                  </span>
-                  <span className="inline-block rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-white transition group-hover:bg-white/20">
-                    {randomFeaturedArticle.readTime}
-                  </span>
+                  {randomFeaturedPost.category ? (
+                    <span className="inline-block rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-white">
+                      {randomFeaturedPost.category.name}
+                    </span>
+                  ) : null}
+                  {randomFeaturedPost.readTimeMinutes > 0 ? (
+                    <span className="inline-block rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-white transition group-hover:bg-white/20">
+                      {readTimeLabel(randomFeaturedPost.readTimeMinutes)}
+                    </span>
+                  ) : null}
                 </div>
               </div>
             </div>
@@ -138,13 +154,14 @@ export function BlogSection({
         )}
 
         <BlogArticles
-          articles={paginatedArticles}
+          articles={paginatedPosts}
           locale={locale}
           noResultsText={noResultsText}
           detailLabel={detailLabel}
+          readTimeLabel={readTimeLabel}
         />
 
-        {totalPages > 1 && listArticles.length > 0 && (
+        {totalPages > 1 && listPosts.length > 0 && (
           <div className="flex items-center justify-center gap-2 pt-8">
             <button
               onClick={() => handlePageChange(currentPage - 1)}
@@ -156,7 +173,7 @@ export function BlogSection({
             </button>
 
             <div className="flex gap-2">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+              {Array.from({length: totalPages}, (_, i) => i + 1).map((page) => (
                 <button
                   key={page}
                   onClick={() => handlePageChange(page)}
