@@ -32,7 +32,7 @@ const labels = {
   },
 } satisfies Record<Locale, Record<string, string>>;
 
-export function FabButton({locale}: {locale: Locale}) {
+export function FabButton({locale, whatsappHref}: {locale: Locale; whatsappHref: string}) {
   const [open, setOpen] = useState(false);
   const [liftPx, setLiftPx] = useState(0);
   const hasCelebratedRef = useRef(false);
@@ -84,7 +84,7 @@ export function FabButton({locale}: {locale: Locale}) {
     },
     {
       label: copy.whatsapp,
-      href: "https://wa.me/902120000000",
+      href: whatsappHref,
       icon: MessageCircle,
     },
     {

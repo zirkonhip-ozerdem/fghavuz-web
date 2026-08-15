@@ -82,17 +82,14 @@ export default function ClientMarquee({
             <div className="relative mb-4 aspect-[4/3] overflow-hidden rounded-xl bg-[#f0eded] sm:h-28 sm:aspect-auto">
               <Image
                 src={category.image}
-                alt={category.name[locale]}
+                alt={category.name}
                 fill
                 sizes="(min-width: 1024px) 25vw, (min-width: 640px) 320px, 78vw"
                 className="object-cover transition-transform duration-500 group-hover:scale-105"
               />
             </div>
-            <span className="font-semibold uppercase tracking-[0.18em] text-[#515f78] text-[0.65rem]">
-              {category.kicker[locale]}
-            </span>
             <h3 className="mt-1 text-base font-bold leading-snug text-ink sm:text-lg">
-              {category.name[locale]}
+              {category.name}
             </h3>
           </Link>
         ))}

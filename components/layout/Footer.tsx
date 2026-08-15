@@ -3,10 +3,13 @@ import {getTranslations} from "next-intl/server";
 import {Link} from "@/i18n/navigation";
 import type {Locale} from "@/i18n/routing";
 import {getFeaturedCategories} from "@/lib/api/catalog";
-import {CONTACT} from "@/lib/contact";
+import type {SiteSettings} from "@/lib/api/siteSettings";
 import {legalDocuments} from "@/lib/data/legal";
 import {FooterProductsColumn} from "./FooterProductsColumn";
 import {Logo} from "./Logo";
+
+const YENGEC_YAZILIM_URL = "https://yengecyazilim.com/";
+const YNA_EKIBI_URL = "https://yazilimnealaka.com.tr/";
 
 const pageLinks = [
   {key: "home", href: "/"},
@@ -17,9 +20,15 @@ const pageLinks = [
   {key: "contact", href: "/contact"},
 ] as const;
 
-export async function Footer({locale}: {locale: Locale}) {
+export async function Footer({
+  locale,
+  siteSettings,
+}: {
+  locale: Locale;
+  siteSettings: SiteSettings;
+}) {
   const t = await getTranslations();
-  const categories = await getFeaturedCategories();
+  const categories = await getFeaturedCategories(locale);
 
   return (
     <footer id="site-footer" className="bg-ink text-white">
@@ -27,11 +36,11 @@ export async function Footer({locale}: {locale: Locale}) {
         <div className="sm:col-span-2 lg:col-span-1">
           <Logo locale={locale} />
           <p className="mt-5 max-w-sm text-sm leading-6 text-white/58">
-            {t("footer.summary")}
+            {siteSettings.footerText || t("footer.summary")}
           </p>
           <div className="mt-5 flex gap-2">
             <a
-              href={CONTACT.emailHref}
+              href={siteSettings.emailHref}
               className="grid size-9 place-items-center rounded-full border border-white/12 text-white/68 transition hover:border-white/30 hover:text-white"
               aria-label="Email"
             >
@@ -57,7 +66,7 @@ export async function Footer({locale}: {locale: Locale}) {
         <FooterProductsColumn
           title={t("nav.products")}
           items={categories.map(
-            (category) => [category.name[locale], `/products/${category.slug}`] as [string, string]
+            (category) => [category.name, `/products/${category.slug}`] as [string, string]
           )}
           locale={locale}
         />
@@ -76,24 +85,27 @@ export async function Footer({locale}: {locale: Locale}) {
           <ul className="mt-4 space-y-3 text-sm text-white/62">
             <li className="flex gap-3">
               <MapPin className="mt-0.5 size-4 shrink-0 text-accent" />
-              {CONTACT.address}
+              {siteSettings.address}
             </li>
             <li className="flex gap-3">
               <Phone className="mt-0.5 size-4 shrink-0 text-accent" />
-              <a href={CONTACT.phoneHref} className="transition hover:text-white">
-                {CONTACT.phone}
+              <a href={siteSettings.phoneHref} className="transition hover:text-white">
+                {siteSettings.phone}
               </a>
             </li>
             <li className="flex gap-3">
               <Mail className="mt-0.5 size-4 shrink-0 text-accent" />
-              <a href={CONTACT.emailHref} className="transition hover:text-white">
-                {CONTACT.email}
+              <a href={siteSettings.emailHref} className="transition hover:text-white">
+                {siteSettings.email}
               </a>
             </li>
           </ul>
           <div className="mt-4 overflow-hidden rounded-md border border-white/12">
             <iframe
-              src={`https://www.google.com/maps?q=${encodeURIComponent(CONTACT.address)}&output=embed`}
+              src={
+                siteSettings.mapEmbedUrl ??
+                `https://www.google.com/maps?q=${encodeURIComponent(siteSettings.address)}&output=embed`
+              }
               title="FGPOOL konum haritası"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
@@ -105,11 +117,11 @@ export async function Footer({locale}: {locale: Locale}) {
 
       <div className="border-t border-white/8">
         <div className="mx-auto grid max-w-7xl grid-cols-1 items-center gap-3 px-5 py-5 text-center text-xs text-white/46 sm:grid-cols-[1fr_auto_1fr] sm:px-8 sm:text-left">
-          <p>© 2026 FGPOOL. {t("footer.rights")}</p>
+          <p>{siteSettings.copyrightText || `© 2026 FGPOOL. ${t("footer.rights")}`}</p>
           <p className="text-center text-[0.68rem] leading-5">
             Bu bir{" "}
             <a
-              href="https://yengecyazilim.com/"
+              href={siteSettings.yengecYazilimUrl || YENGEC_YAZILIM_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="font-semibold text-[#ff5722] transition hover:underline"
@@ -118,7 +130,7 @@ export async function Footer({locale}: {locale: Locale}) {
             </a>{" "}
             ve{" "}
             <a
-              href="https://yazilimnealaka.com.tr/"
+              href={siteSettings.ynaEkibiUrl || YNA_EKIBI_URL}
               target="_blank"
               rel="noopener noreferrer"
               className="font-semibold text-[#0dafff] transition hover:underline"

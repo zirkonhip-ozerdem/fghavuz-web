@@ -5,6 +5,9 @@ const nextConfig: NextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
     unoptimized: process.env.NODE_ENV === "development",
+    remotePatterns: [
+      {protocol: "http", hostname: "localhost", port: "8000", pathname: "/storage/**"},
+    ],
   },
   allowedDevOrigins: ["192.168.1.83"],
 };

@@ -3,18 +3,11 @@
 import {ChevronLeft, ChevronRight} from "lucide-react";
 import Image from "next/image";
 import {useEffect, useRef, useState} from "react";
-import type {Locale} from "@/i18n/routing";
 import type {Project} from "@/lib/api/catalog";
 
 const SPEED_PX_PER_SEC = 32;
 
-export function ReferencesSlider({
-  projects,
-  locale,
-}: {
-  projects: Project[];
-  locale: Locale;
-}) {
+export function ReferencesSlider({projects}: {projects: Project[]}) {
   const trackRef = useRef<HTMLDivElement | null>(null);
   const reqRef = useRef<number | null>(null);
   const lastTimeRef = useRef<number | null>(null);
@@ -145,7 +138,7 @@ export function ReferencesSlider({
             >
               <Image
                 src={project.image}
-                alt={project.title[locale]}
+                alt={project.title}
                 fill
                 sizes="(min-width: 1024px) 32vw, (min-width: 640px) 48vw, 85vw"
                 className="object-cover"
@@ -153,9 +146,9 @@ export function ReferencesSlider({
               <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(17,17,20,0.08),rgba(17,17,20,0.78))]" />
               <div className="absolute inset-x-0 bottom-0 p-6">
                 <p className="text-[0.62rem] font-black uppercase tracking-[0.18em] text-white/62">
-                  {project.location[locale]}
+                  {project.location}
                 </p>
-                <h3 className="mt-1 text-xl font-black">{project.title[locale]}</h3>
+                <h3 className="mt-1 text-xl font-black">{project.title}</h3>
               </div>
             </article>
           ))}

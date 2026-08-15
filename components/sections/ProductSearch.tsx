@@ -31,7 +31,7 @@ export function ProductSearch({
 
     return categories
       .filter((category) =>
-        [category.name[locale], category.kicker[locale], category.slug]
+        [category.name, category.description, category.slug]
           .join(" ")
           .toLocaleLowerCase(locale)
           .includes(normalized),
@@ -83,10 +83,10 @@ export function ProductSearch({
               className="block w-full rounded-md px-3 py-2 text-start transition hover:bg-neutral-soft"
             >
               <span className="block text-sm font-bold text-ink">
-                {category.name[locale]}
+                {category.name}
               </span>
               <span className="block text-xs text-ink/55">
-                {category.description[locale]}
+                {category.description}
               </span>
             </button>
           ))}

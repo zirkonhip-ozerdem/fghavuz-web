@@ -8,6 +8,7 @@ import {FabButton} from "@/components/layout/FabButton";
 import {Footer} from "@/components/layout/Footer";
 import {Header} from "@/components/layout/Header";
 import {TopHeader} from "@/components/layout/TopHeader";
+import {getSiteSettings} from "@/lib/api/siteSettings";
 import "../globals.css";
 
 const inter = Inter({
@@ -79,18 +80,18 @@ export default async function LocaleLayout({
   }
 
   const locale = rawLocale as Locale;
-  const messages = await getMessages();
+  const [messages, siteSettings] = await Promise.all([getMessages(), getSiteSettings(locale)]);
   const dir = locale === "ar" ? "rtl" : "ltr";
 
   return (
     <html lang={locale} dir={dir} className={`${inter.variable} ${manrope.variable}`}>
       <body>
         <NextIntlClientProvider messages={messages}>
-          <TopHeader locale={locale} />
+          <TopHeader locale={locale} siteSettings={siteSettings} />
           <Header locale={locale} />
           {children}
-          <Footer locale={locale} />
-          <FabButton locale={locale} />
+          <Footer locale={locale} siteSettings={siteSettings} />
+          <FabButton locale={locale} whatsappHref={siteSettings.whatsappHref} />
         </NextIntlClientProvider>
       </body>
     </html>
