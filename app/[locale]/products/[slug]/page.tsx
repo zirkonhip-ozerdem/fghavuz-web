@@ -1,11 +1,19 @@
-import {BarChart3, FileText, ImageIcon, Settings} from "lucide-react";
 import {getTranslations} from "next-intl/server";
 import {notFound} from "next/navigation";
 import ProductGallery from "@/components/ProductGallery";
-import {PageHeader} from "@/components/layout/PageHeader";
+import {PageHeader, type BreadcrumbItem} from "@/components/layout/PageHeader";
+import {ProductDocumentsPreview} from "@/components/sections/products/ProductDocumentsPreview";
 import {Link} from "@/i18n/navigation";
 import type {Locale} from "@/i18n/routing";
-import {getProductBySlug, getProducts} from "@/lib/api/products";
+import {
+  getProductBySlug,
+  getProductCategories,
+  getProducts,
+  getProductSubcategories,
+  type ProductDocument,
+  type ProductCategory,
+  type ProductSubcategory,
+} from "@/lib/api/products";
 
 export async function generateStaticParams() {
   const products = await getProducts("en");
@@ -22,7 +30,10 @@ export default async function ProductDetailPage({
 }) {
   const {locale: rawLocale, slug} = await params;
   const locale = rawLocale as Locale;
-  const product = await getProductBySlug(slug, locale);
+  const [product, categories] = await Promise.all([
+    getProductBySlug(slug, locale),
+    getProductCategories(locale),
+  ]);
   const t = await getTranslations({locale, namespace: "ProductDetail"});
   const navT = await getTranslations({locale, namespace: "nav"});
 
@@ -30,13 +41,59 @@ export default async function ProductDetailPage({
     notFound();
   }
 
-  const galleryImages = product.galleryImages?.length ? product.galleryImages : [product.image];
-  const documents = [
-    {icon: FileText, title: t("userManual"), text: t("downloadPdf"), href: "#"},
-    {icon: Settings, title: t("installGuide"), text: t("downloadPdf"), href: "#"},
-    {icon: BarChart3, title: t("datasheet"), text: t("downloadPdf"), href: "#"},
-    {icon: ImageIcon, title: t("techVisuals"), text: t("pendingVisual")},
+  const category =
+    product.category ||
+    categories.find((item) => {
+      return item.id === product.categoryId || item.slug === product.categoryId;
+    });
+  const subcategories = category
+    ? await getProductSubcategories(category.slug, locale)
+    : [];
+  const subcategory =
+    product.subcategory ||
+    subcategories.find((item) => {
+      return (
+        item.id === product.subcategoryId ||
+        item.slug === product.subcategory?.slug ||
+        item.name === product.subcategory?.name
+      );
+    });
+  const breadcrumbCategory: ProductCategory | undefined = category;
+  const breadcrumbSubcategory: ProductSubcategory | undefined = subcategory;
+  const breadcrumbs: BreadcrumbItem[] = [
+    {label: navT("home"), href: "/"},
+    {label: navT("products"), href: "/products"},
+    ...(breadcrumbCategory
+      ? [
+          {
+            label: breadcrumbCategory.name,
+            href: `/products/category/${breadcrumbCategory.slug}`,
+          },
+        ]
+      : []),
+    ...(breadcrumbCategory && breadcrumbSubcategory
+      ? [
+          {
+            label: breadcrumbSubcategory.name,
+            href: `/products/category/${breadcrumbCategory.slug}/${breadcrumbSubcategory.slug || breadcrumbSubcategory.id}`,
+          },
+        ]
+      : []),
+    {label: product.title},
   ];
+  const galleryImages = product.galleryImages?.length
+    ? product.galleryImages
+    : product.image
+      ? [product.image]
+      : [];
+  const features = Array.isArray(product.features) ? product.features : [];
+  const fallbackDocuments: ProductDocument[] = [
+    {id: "user-manual", title: t("userManual"), href: "#", format: "PDF"},
+    {id: "install-guide", title: t("installGuide"), href: "#", format: "PDF"},
+    {id: "datasheet", title: t("datasheet"), href: "#", format: "XLS"},
+    {id: "technical-visuals", title: t("techVisuals"), href: "#", format: "DOC", description: t("pendingVisual")},
+  ];
+  const documents = product.documents?.length ? product.documents : fallbackDocuments;
 
   return (
     <main className="bg-gray-50 min-h-screen pb-16">
@@ -44,11 +101,7 @@ export default async function ProductDetailPage({
         locale={locale}
         title={product.title}
         description={product.description}
-        breadcrumbs={[
-          {label: navT("home"), href: "/"},
-          {label: navT("products"), href: "/products"},
-          {label: product.title},
-        ]}
+        breadcrumbs={breadcrumbs}
       />
 
         <div className="container mx-auto px-4 max-w-7xl py-16 relative z-[999]">
@@ -64,33 +117,43 @@ export default async function ProductDetailPage({
 
         <section className="mb-12 flex flex-col overflow-hidden rounded-lg border border-gray-100 bg-white shadow-sm md:flex-row">
           <div className="flex w-full flex-col md:w-1/2">
-            <ProductGallery images={galleryImages} />
+            {galleryImages.length > 0 ? (
+              <ProductGallery images={galleryImages} />
+            ) : (
+              <div className="flex h-full min-h-[300px] items-center justify-center bg-gray-100 text-gray-400">
+                Görsel Bulunamadı
+              </div>
+            )}
           </div>
 
           <div className="flex w-full flex-col p-8 md:w-1/2 md:p-12">
-            <span className="mb-2 text-sm font-semibold uppercase tracking-wider text-gray-500">
-              {product.series}
-            </span>
+            {product.series ? (
+              <span className="mb-2 text-sm font-semibold uppercase tracking-wider text-gray-500">
+                {product.series}
+              </span>
+            ) : null}
 
             <h1 className="mb-4 text-3xl font-bold text-slate-900 md:text-4xl">
               {product.title}
             </h1>
 
             <p className="mb-8 text-lg text-gray-600">
-              {product.description}
+              {product.description || product.short_description}
             </p>
 
-            <div className="mb-10">
-              <h2 className="mb-4 text-xl font-bold text-slate-900">{t("features")}</h2>
-              <ul className="space-y-3">
-                {product.features.map((feature) => (
-                  <li key={feature} className="flex items-center text-gray-600">
-                    <span className="me-3 font-bold text-red-500">✓</span>
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-            </div>
+            {features.length > 0 ? (
+              <div className="mb-10">
+                <h2 className="mb-4 text-xl font-bold text-slate-900">{t("features")}</h2>
+                <ul className="space-y-3">
+                  {features.map((feature) => (
+                    <li key={feature} className="flex items-center text-gray-600">
+                      <span className="me-3 font-bold text-red-500">✓</span>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
 
             <div className="mt-auto">
               <Link
@@ -104,39 +167,19 @@ export default async function ProductDetailPage({
           </div>
         </section>
 
-        <section className="overflow-hidden rounded-lg border border-gray-100 bg-white p-8 shadow-sm md:p-12">
+        <section className="overflow-hidden rounded-lg border border-gray-100 bg-white p-6 shadow-sm md:p-8 lg:p-10">
           <h2 className="mb-8 border-b border-gray-100 pb-4 text-2xl font-bold text-slate-900">
             {t("techDocs")}
           </h2>
 
-          <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {documents.map(({icon: Icon, title, text, href}) => {
-              const content = (
-                <>
-                  <Icon className="mb-3 size-10 text-slate-700 transition-colors group-hover:text-red-500" aria-hidden="true" />
-                  <span className="text-center font-semibold text-slate-900">{title}</span>
-                  <span className="mt-2 text-xs text-gray-500">{text}</span>
-                </>
-              );
-
-              return href ? (
-                <a
-                  key={title}
-                  href={href}
-                  className="group flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-gray-50 p-6 transition-all hover:border-red-500 hover:shadow-md"
-                >
-                  {content}
-                </a>
-              ) : (
-                <div
-                  key={title}
-                  className="flex flex-col items-center justify-center rounded-lg border border-gray-200 bg-gray-50 p-6"
-                >
-                  {content}
-                </div>
-              );
-            })}
-          </div>
+          <ProductDocumentsPreview
+            documents={documents}
+            labels={{
+              open: t("openDocument"),
+              download: t("downloadDocument"),
+              previewUnavailable: t("previewUnavailable"),
+            }}
+          />
         </section>
       </div>
     </main>

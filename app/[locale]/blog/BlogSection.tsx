@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import {useMemo, useState, useEffect, type ReactNode} from "react";
+import {useMemo, useState, type ReactNode} from "react";
 import {ChevronLeft, ChevronRight} from "lucide-react";
 import {Link} from "@/i18n/navigation";
 import type {Locale} from "@/i18n/routing";
@@ -24,7 +24,7 @@ export function BlogSection({
   sidebarChildren,
 }: {
   locale: Locale;
-  featuredArticle: BlogArticle;
+  featuredArticle?: BlogArticle;
   articles: BlogArticle[];
   filters: readonly {id: string; label: string}[];
   placeholder: string;
@@ -39,13 +39,7 @@ export function BlogSection({
   const [selectedFilter, setSelectedFilter] = useState(defaultFilter);
   const [query, setQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [randomFeaturedArticle, setRandomFeaturedArticle] = useState<BlogArticle | null>(null);
-
-  // Random featured article - only on client side
-  useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * articles.length);
-    setRandomFeaturedArticle(articles[randomIndex] || featuredArticle);
-  }, [articles, featuredArticle]);
+  const selectedFeaturedArticle = featuredArticle ?? articles[0] ?? null;
 
   const filteredArticles = useMemo(
     () =>
@@ -69,7 +63,7 @@ export function BlogSection({
 
   const listArticles = showFeatured
     ? filteredArticles.filter(
-        (article) => article.id !== (randomFeaturedArticle?.id || featuredArticle.id)
+        (article) => article.id !== selectedFeaturedArticle?.id
       )
     : filteredArticles;
 
@@ -97,16 +91,16 @@ export function BlogSection({
   return (
     <>
       <div className="space-y-8">
-        {showFeatured && randomFeaturedArticle && (
+        {showFeatured && selectedFeaturedArticle && (
           <Link
-            href={`/blog/${randomFeaturedArticle.id}`}
+            href={`/blog/${selectedFeaturedArticle.slug}`}
             locale={locale}
             className="group block overflow-hidden rounded-[1.5rem] bg-white shadow-[0_25px_80px_rgba(17,17,20,0.12)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_30px_90px_rgba(17,17,20,0.15)]"
           >
             <div className="relative h-[420px] overflow-hidden bg-[#f5f3f0]">
               <Image
-                src={randomFeaturedArticle.imageSrc}
-                alt={randomFeaturedArticle.title}
+                src={selectedFeaturedArticle.imageSrc}
+                alt={selectedFeaturedArticle.title}
                 fill
                 priority
                 loading="eager"
@@ -119,17 +113,17 @@ export function BlogSection({
                   {featuredTag}
                 </span>
                 <h2 className="mt-4 max-w-2xl text-3xl font-black leading-tight text-white sm:text-4xl">
-                  {randomFeaturedArticle.title}
+                  {selectedFeaturedArticle.title}
                 </h2>
                 <p className="mt-3 max-w-xl text-sm leading-6 text-white/80 sm:text-base">
-                  {randomFeaturedArticle.summary}
+                  {selectedFeaturedArticle.summary}
                 </p>
                 <div className="mt-6 flex flex-wrap gap-3">
                   <span className="inline-block rounded-full bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-white">
-                    {randomFeaturedArticle.category}
+                    {selectedFeaturedArticle.category}
                   </span>
                   <span className="inline-block rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.24em] text-white transition group-hover:bg-white/20">
-                    {randomFeaturedArticle.readTime}
+                    {selectedFeaturedArticle.readTime}
                   </span>
                 </div>
               </div>

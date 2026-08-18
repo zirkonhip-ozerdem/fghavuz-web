@@ -1,4 +1,5 @@
 import type {Locale} from "@/i18n/routing";
+import {apiGet} from "./client";
 
 type LocalizedText = Record<Locale, string>;
 
@@ -278,25 +279,209 @@ const catalogDocuments: CatalogDocument[] = [
   },
 ];
 
-export async function getFeaturedCategories() {
-  return categories;
+type RawCategory = {
+  id: number;
+  name: string;
+  slug?: string | null;
+  slug_tr?: string | null;
+  slug_en?: string | null;
+  slug_ar?: string | null;
+  slugs?: unknown;
+  description: string | null;
+  image: string | null;
+  is_featured: boolean;
+};
+
+type RawReference = {
+  id: number;
+  title: string;
+  slug: string;
+  location: string;
+  description: string | null;
+  image: string | null;
+  is_featured: boolean;
+};
+
+type RawCatalog = {
+  id: number;
+  title: string;
+  slug: string;
+  description: string | null;
+  cover_image: string | null;
+  file_url: string;
+  download_url: string;
+  file_type: string | null;
+  file_size: number | null;
+};
+
+const FALLBACK_CATEGORY_IMAGE = "/assets/category-other-products.png";
+const FALLBACK_PROJECT_IMAGE = "/assets/azure-project.jpeg";
+
+const productKickers: Record<Locale, string> = {
+  en: "Product",
+  tr: "Ürün",
+  ar: "منتج",
+};
+
+function localized(locale: Locale, value: string): LocalizedText {
+  return {
+    en: locale === "en" ? value : "",
+    tr: locale === "tr" ? value : "",
+    ar: locale === "ar" ? value : "",
+  };
 }
 
-/** Homepage showcase feed — only categories flagged "öne çıkar" (featured) in the admin panel. */
-export async function getShowcaseCategories() {
-  return categories.filter((category) => category.featured);
+function pickLocalizedValue(value: unknown, locale: Locale): string {
+  if (!value) return "";
+
+  if (typeof value === "object") {
+    const parsed = value as Partial<Record<Locale, string>>;
+    return parsed[locale] || parsed.tr || parsed.en || parsed.ar || "";
+  }
+
+  if (typeof value !== "string") {
+    return String(value);
+  }
+
+  try {
+    const parsed = JSON.parse(value) as Partial<Record<Locale, string>>;
+    if (parsed && typeof parsed === "object") {
+      return parsed[locale] || parsed.tr || parsed.en || parsed.ar || value;
+    }
+  } catch {
+    return value;
+  }
+
+  return value;
 }
 
-export async function getCatalogDocuments() {
-  return catalogDocuments;
+function slugify(value: string) {
+  return value
+    .trim()
+    .toLocaleLowerCase("tr")
+    .replace(/ğ/g, "g")
+    .replace(/ü/g, "u")
+    .replace(/ş/g, "s")
+    .replace(/ı/g, "i")
+    .replace(/ö/g, "o")
+    .replace(/ç/g, "c")
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function pickLocalizedSlug(raw: RawCategory, locale: Locale, label?: string) {
+  const directSlug = {
+    en: raw.slug_en,
+    tr: raw.slug_tr,
+    ar: raw.slug_ar,
+  }[locale];
+
+  return (
+    pickLocalizedValue(directSlug, locale) ||
+    pickLocalizedValue(raw.slugs, locale) ||
+    (locale === "tr" && label ? slugify(label) : "") ||
+    pickLocalizedValue(raw.slug, locale) ||
+    String(raw.id)
+  );
+}
+
+function fillLocalized(locale: Locale, value: string, fallback = value): LocalizedText {
+  return {
+    en: locale === "en" ? value : fallback,
+    tr: locale === "tr" ? value : fallback,
+    ar: locale === "ar" ? value : fallback,
+  };
+}
+
+function mapCategory(raw: RawCategory, locale: Locale): ProductCategory {
+  const name = pickLocalizedValue(raw.name, locale) || raw.name;
+  const description = pickLocalizedValue(raw.description, locale);
+
+  return {
+    id: String(raw.id),
+    slug: pickLocalizedSlug(raw, locale, name),
+    image: raw.image ?? FALLBACK_CATEGORY_IMAGE,
+    featured: raw.is_featured,
+    kicker: fillLocalized(locale, productKickers[locale], productKickers.tr),
+    name: fillLocalized(locale, name),
+    description: fillLocalized(locale, description),
+  };
+}
+
+function mapReference(raw: RawReference, locale: Locale): Project {
+  return {
+    id: String(raw.id),
+    image: raw.image ?? FALLBACK_PROJECT_IMAGE,
+    location: localized(locale, raw.location),
+    title: localized(locale, raw.title),
+  };
+}
+
+function formatFileSize(bytes: number | null): string {
+  if (!bytes) return "";
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function formatFileType(mimeType: string | null): "PDF" {
+  if (!mimeType || mimeType.includes("pdf")) return "PDF";
+  return "PDF";
+}
+
+function mapCatalogDocument(raw: RawCatalog, locale: Locale): CatalogDocument {
+  return {
+    id: String(raw.id),
+    format: formatFileType(raw.file_type),
+    size: formatFileSize(raw.file_size),
+    href: raw.download_url || raw.file_url,
+    title: fillLocalized(locale, raw.title),
+    description: fillLocalized(locale, raw.description ?? ""),
+  };
+}
+
+function fallbackForLocale<T>(items: T[]): T[] {
+  return items;
+}
+
+export async function getFeaturedCategories(locale: Locale = "tr") {
+  try {
+    const remoteCategories = await apiGet<RawCategory[]>("/products/categories", {locale});
+    return remoteCategories.map((category) => mapCategory(category, locale));
+  } catch {
+    return fallbackForLocale(categories);
+  }
+}
+
+export async function getShowcaseCategories(locale: Locale = "tr") {
+  try {
+    const remoteCategories = await getFeaturedCategories(locale);
+    return remoteCategories.filter((category) => category.featured);
+  } catch {
+    return categories.filter((category) => category.featured);
+  }
+}
+
+export async function getCatalogDocuments(locale: Locale = "tr") {
+  try {
+    const catalogs = await apiGet<RawCatalog[]>("/catalogs", {locale});
+    return catalogs.map((catalog) => mapCatalogDocument(catalog, locale));
+  } catch {
+    return catalogDocuments;
+  }
 }
 
 export async function getAdvantages() {
   return advantages;
 }
 
-export async function getProjects() {
-  return projects;
+export async function getProjects(locale: Locale = "tr") {
+  try {
+    const references = await apiGet<RawReference[]>("/home/references", {locale});
+    return references.map((reference) => mapReference(reference, locale));
+  } catch {
+    return projects;
+  }
 }
 
 export async function searchCatalog(query: string, locale: Locale) {

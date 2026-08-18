@@ -1,7 +1,7 @@
 import {Mail, MapPin, MessageCircle, Phone} from "lucide-react";
 import {getTranslations} from "next-intl/server";
 import type {Locale} from "@/i18n/routing";
-import {CONTACT} from "@/lib/contact";
+import type {SiteSettings} from "@/lib/api/siteSettings";
 
 function InstagramIcon({className}: {className?: string}) {
   return (
@@ -24,21 +24,27 @@ function InstagramIcon({className}: {className?: string}) {
 
 const linkClassName = "grid size-6 place-items-center text-ink/80 transition hover:text-[#F4B96A]";
 
-export async function TopHeader({locale}: {locale: Locale}) {
+export async function TopHeader({
+  locale,
+  siteSettings,
+}: {
+  locale: Locale;
+  siteSettings: SiteSettings;
+}) {
   const t = await getTranslations("topbar");
 
   return (
     <div className="fixed inset-x-0 top-0 z-50 h-9 bg-[#c9ebf3]">
       <div className="mx-auto flex h-full max-w-7xl items-center justify-between gap-4 px-5 sm:px-8">
         <div className="flex items-center gap-2 ms-1 sm:gap-4 sm:ms-6">
-          <a href={CONTACT.phoneHref} aria-label={t("phone")} className={linkClassName}>
+          <a href={siteSettings.phoneHref} aria-label={t("phone")} className={linkClassName}>
             <Phone className="size-4" aria-hidden="true" />
           </a>
-          <a href={CONTACT.emailHref} aria-label={t("email")} className={linkClassName}>
+          <a href={siteSettings.emailHref} aria-label={t("email")} className={linkClassName}>
             <Mail className="size-4" aria-hidden="true" />
           </a>
           <a
-            href={CONTACT.whatsappHref}
+            href={siteSettings.whatsappHref}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={t("whatsapp")}
@@ -47,7 +53,7 @@ export async function TopHeader({locale}: {locale: Locale}) {
             <MessageCircle className="size-4" aria-hidden="true" />
           </a>
           <a
-            href={`https://maps.google.com/?q=${encodeURIComponent(CONTACT.address)}`}
+            href={`https://maps.google.com/?q=${encodeURIComponent(siteSettings.address)}`}
             target="_blank"
             rel="noopener noreferrer"
             aria-label={t("location")}
@@ -67,9 +73,17 @@ export async function TopHeader({locale}: {locale: Locale}) {
         </div>
 
         <div className="flex items-center gap-3">
-          <a href={CONTACT.instagramHref} aria-label={t("instagram")} className={linkClassName}>
-            <InstagramIcon className="size-4" />
-          </a>
+          {siteSettings.social.instagram ? (
+            <a
+              href={siteSettings.social.instagram}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={t("instagram")}
+              className={linkClassName}
+            >
+              <InstagramIcon className="size-4" />
+            </a>
+          ) : null}
         </div>
       </div>
     </div>

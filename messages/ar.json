@@ -283,6 +283,9 @@
     "datasheet": "ورقة البيانات",
     "techVisuals": "صور فنية",
     "downloadPdf": "تحميل PDF",
+    "downloadDocument": "تحميل المستند",
+    "openDocument": "فتح المستند",
+    "previewUnavailable": "لا يمكن معاينة هذا النوع من الملفات داخل المتصفح. يمكنك فتح المستند أو تنزيله لمراجعته.",
     "pendingVisual": "في انتظار الصور"
   },
   "Contact": {

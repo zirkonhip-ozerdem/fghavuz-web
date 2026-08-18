@@ -1,14 +1,15 @@
-import Link from 'next/link';
-import { Product } from '@/lib/api/products';
+import {Link} from "@/i18n/navigation";
+import type {Locale} from "@/i18n/routing";
+import type {Product} from "@/lib/api/products";
 
 interface ProductCardProps {
   product: Product;
-  locale: string;
+  locale: Locale;
 }
 
 export default function ProductCard({ product, locale }: ProductCardProps) {
   return (
-    <Link href={`/${locale}/products/${product.slug}`} className="block group">
+    <Link href={`/products/${product.slug}`} locale={locale} className="block group">
       {/* Kartın Dış Çerçevesi - 8px radius (rounded-lg) ve hafif gölge */}
       <div className="bg-white rounded-lg shadow-sm hover:shadow-md transition-shadow duration-300 overflow-hidden border border-gray-100 h-full flex flex-col">
         

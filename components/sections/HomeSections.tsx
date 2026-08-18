@@ -15,9 +15,12 @@ import {Link} from "@/i18n/navigation";
 import ClientMarquee from "./ClientMarquee";
 import {ReferencesSlider} from "./ReferencesSlider";
 import {RevealOnScroll} from "./RevealOnScroll";
+import {VideoModalButton} from "./VideoModalButton";
 import type {Locale} from "@/i18n/routing";
-import type {Advantage, ProductCategory, Project} from "@/lib/api/catalog";
+import type {Advantage, CatalogDocument, Project} from "@/lib/api/catalog";
 import type {BlogPost} from "@/lib/api/blog";
+import type {Product} from "@/lib/api/products";
+import type {VideoSource} from "@/lib/video";
 
 const advantageIcons = {
   award: Award,
@@ -27,10 +30,10 @@ const advantageIcons = {
 
 export async function EngineeredComponents({
   locale,
-  categories,
+  products,
 }: {
   locale: Locale;
-  categories: ProductCategory[];
+  products: Product[];
 }) {
   const t = await getTranslations("home");
 
@@ -59,26 +62,22 @@ export async function EngineeredComponents({
         <div className="absolute inset-y-0 left-0 w-20 bg-gradient-to-r from-[#fcf9f8] to-transparent z-10 pointer-events-none" />
         <div className="absolute inset-y-0 right-0 w-20 bg-gradient-to-l from-[#fcf9f8] to-transparent z-10 pointer-events-none" />
         <div className="relative">
-          <ClientMarquee categories={categories} locale={locale} />
+          <ClientMarquee products={products} locale={locale} />
         </div>
       </div>
     </section>
   );
 }
 
-export async function CatalogShowcase({locale}: {locale: Locale}) {
+export async function CatalogShowcase({
+  locale,
+  documents,
+}: {
+  locale: Locale;
+  documents: CatalogDocument[];
+}) {
   const t = await getTranslations("home");
-
-  const documents = [
-    {
-      title: t("catalogDocOneTitle"),
-      text: t("catalogDocOneText"),
-    },
-    {
-      title: t("catalogDocTwoTitle"),
-      text: t("catalogDocTwoText"),
-    },
-  ];
+  const previewDocuments = documents.slice(0, 2);
 
   return (
     <section className="bg-[#fcf9f8] py-20 md:py-28">
@@ -110,9 +109,9 @@ export async function CatalogShowcase({locale}: {locale: Locale}) {
             </div>
 
             <div className="min-w-0 grid grid-cols-1 gap-3">
-              {documents.map((doc) => (
+              {previewDocuments.map((doc) => (
                 <div
-                  key={doc.title}
+                  key={doc.id}
                   className="group flex items-center gap-4 rounded-xl border border-white/10 bg-white/5 p-4 transition hover:border-accent/40 hover:bg-white/10 sm:p-5"
                 >
                   <span className="grid size-11 shrink-0 place-items-center rounded-lg bg-white/10 text-accent transition group-hover:bg-accent group-hover:text-white">
@@ -120,9 +119,11 @@ export async function CatalogShowcase({locale}: {locale: Locale}) {
                   </span>
                   <div className="min-w-0 flex-1">
                     <h3 className="truncate text-sm font-bold text-white sm:text-base">
-                      {doc.title}
+                      {doc.title[locale]}
                     </h3>
-                    <p className="mt-0.5 truncate text-xs text-white/56 sm:text-sm">{doc.text}</p>
+                    <p className="mt-0.5 truncate text-xs text-white/56 sm:text-sm">
+                      {doc.description[locale]}
+                    </p>
                   </div>
                   <Link
                     href="/catalog"
@@ -182,7 +183,7 @@ export async function FeaturedBlogSection({
           {posts.map((post) => (
             <Link
               key={post.id}
-              href="/blog"
+              href={`/blog/${post.slug}`}
               locale={locale}
               className="group overflow-hidden rounded-2xl border border-ink/8 bg-white shadow-none transition-shadow duration-300 hover:shadow-[0_0_0_1px_rgba(37,99,235,0.22),0_16px_32px_rgba(37,99,235,0.12)] hover:[animation:card-sway_1.4s_ease-in-out_infinite]"
             >
@@ -226,8 +227,9 @@ export async function FeaturedBlogSection({
   );
 }
 
-export async function FactoryBanner() {
+export async function FactoryBanner({videoSource}: {videoSource: VideoSource | null}) {
   const t = await getTranslations("home");
+  const tSections = await getTranslations("sections");
 
   return (
     <section className="bg-[#fcf9f8] py-20">
@@ -250,13 +252,17 @@ export async function FactoryBanner() {
             </h2>
             <p className="mt-4 text-sm leading-6 text-white/72">{t("factoryText")}</p>
           </div>
-          <button
-            type="button"
-            className="absolute bottom-7 end-7 grid size-14 place-items-center rounded-full border border-white/28 bg-white/16 text-white backdrop-blur transition hover:bg-white/24"
-            aria-label="Play"
-          >
-            <Play className="ms-1 size-5 fill-current" aria-hidden="true" />
-          </button>
+          {videoSource ? (
+            <VideoModalButton source={videoSource} label={tSections("corporateVideoLabel")} />
+          ) : (
+            <button
+              type="button"
+              className="absolute bottom-7 end-7 grid size-14 place-items-center rounded-full border border-white/28 bg-white/16 text-white backdrop-blur transition hover:bg-white/24"
+              aria-label="Play"
+            >
+              <Play className="ms-1 size-5 fill-current" aria-hidden="true" />
+            </button>
+          )}
         </div>
       </div>
     </section>

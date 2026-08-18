@@ -5,6 +5,7 @@ import type {Locale} from "@/i18n/routing";
 
 export type BlogArticle = {
   id: string;
+  slug: string;
   category: string;
   filter: string;
   title: string;
@@ -35,7 +36,7 @@ export function BlogArticles({articles, locale, noResultsText, detailLabel}: Blo
       {articles.map((article) => (
         <Link
           key={article.id}
-          href={`/blog/${article.id}`}
+          href={`/blog/${article.slug}`}
           locale={locale}
           className="group flex w-full flex-col overflow-hidden rounded-[1.5rem] border border-ink/10 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-[0_20px_40px_rgba(17,17,20,0.08)] sm:flex-row"
         >

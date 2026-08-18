@@ -283,6 +283,9 @@
     "datasheet": "Datasheet",
     "techVisuals": "Teknik Görseller",
     "downloadPdf": "PDF İndir",
+    "downloadDocument": "Dokümanı İndir",
+    "openDocument": "Dokümanı Aç",
+    "previewUnavailable": "Bu dosya tipi tarayıcı içinde önizlenemiyor. Dosyayı açarak veya indirerek inceleyebilirsiniz.",
     "pendingVisual": "Görsel Bekleniyor"
   },
   "Contact": {

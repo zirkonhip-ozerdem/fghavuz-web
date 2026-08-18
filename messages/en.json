@@ -283,6 +283,9 @@
     "datasheet": "Datasheet",
     "techVisuals": "Technical Visuals",
     "downloadPdf": "Download PDF",
+    "downloadDocument": "Download Document",
+    "openDocument": "Open Document",
+    "previewUnavailable": "This file type cannot be previewed inside the browser. You can open or download the document to review it.",
     "pendingVisual": "Visual Pending"
   },
   "Contact": {

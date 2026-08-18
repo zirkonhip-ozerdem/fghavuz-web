@@ -7,12 +7,14 @@ import {
   PencilRuler,
   Send,
 } from "lucide-react";
+import type {Metadata} from "next";
 import {getTranslations} from "next-intl/server";
 import {Link} from "@/i18n/navigation";
 import {PageHeader} from "@/components/layout/PageHeader";
 import {Reveal} from "@/components/ui/Reveal";
 import type {Locale} from "@/i18n/routing";
 import {getCatalogDocuments} from "@/lib/api/catalog";
+import {getSeoPage, toMetadata} from "@/lib/api/seo";
 
 const formats = [
   {icon: FileText, title: "catalogFormatPdfTitle", text: "catalogFormatPdfText"},
@@ -26,6 +28,21 @@ const steps = [
   {icon: CheckCircle2, title: "catalogStep3Title", text: "catalogStep3Text"},
 ] as const;
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{locale: string}>;
+}): Promise<Metadata> {
+  const {locale: rawLocale} = await params;
+  const locale = rawLocale as Locale;
+  const [seo, t] = await Promise.all([
+    getSeoPage("catalog", locale),
+    getTranslations({locale, namespace: "sections"}),
+  ]);
+
+  return toMetadata(seo, {title: t("catalogTitle"), description: t("catalogText")});
+}
+
 export default async function CatalogPage({
   params,
 }: {
@@ -35,7 +52,7 @@ export default async function CatalogPage({
   const locale = rawLocale as Locale;
   const t = await getTranslations({locale, namespace: "sections"});
   const navT = await getTranslations({locale, namespace: "nav"});
-  const documents = await getCatalogDocuments();
+  const documents = await getCatalogDocuments(locale);
 
   return (
     <main>

@@ -3,14 +3,14 @@ import React, {useEffect, useRef, useState} from "react";
 import Image from "next/image";
 import {Link} from "@/i18n/navigation";
 import type {Locale} from "@/i18n/routing";
-import type {ProductCategory} from "@/lib/api/catalog";
+import type {Product} from "@/lib/api/products";
 
 export default function ClientMarquee({
-  categories,
+  products,
   locale,
   speed = 25,
 }: {
-  categories: ProductCategory[];
+  products: Product[];
   locale: Locale;
   speed?: number; // pixels per second
 }) {
@@ -22,7 +22,7 @@ export default function ClientMarquee({
 
   useEffect(() => {
     const track = trackRef.current;
-    if (!track || categories.length === 0) return;
+    if (!track || products.length === 0) return;
     const trackElement = track;
 
     let firstWidth = trackElement.scrollWidth / 2 || 0;
@@ -55,10 +55,10 @@ export default function ClientMarquee({
       if (reqRef.current) cancelAnimationFrame(reqRef.current);
       window.removeEventListener("resize", handleResize);
     };
-  }, [categories, paused, speed]);
+  }, [products, paused, speed]);
 
   // duplicate for seamless loop
-  const items = [...categories, ...categories];
+  const items = [...products, ...products];
 
   return (
     <div
@@ -72,28 +72,31 @@ export default function ClientMarquee({
         style={{transform: "translateX(0px)"}}
         aria-hidden={false}
       >
-        {items.map((category, idx) => (
+        {items.map((product, idx) => (
           <Link
-            key={`${category.id}-${idx}`}
-            href={`/products/${category.slug}`}
+            key={`${product.id}-${idx}`}
+            href={`/products/${product.slug}`}
             locale={locale}
             className="group w-[78vw] max-w-[320px] shrink-0 cursor-pointer rounded-2xl border border-[#8e706f]/30 bg-[#fcf9f8] p-3 transition-all duration-300 sm:w-[320px] sm:rounded-3xl sm:p-4"
           >
             <div className="relative mb-4 aspect-[4/3] overflow-hidden rounded-xl bg-[#f0eded] sm:h-28 sm:aspect-auto">
               <Image
-                src={category.image}
-                alt={category.name[locale]}
+                src={product.image}
+                alt={product.title}
                 fill
                 sizes="(min-width: 1024px) 25vw, (min-width: 640px) 320px, 78vw"
-                className="object-cover transition-transform duration-500 group-hover:scale-105"
+                className="object-contain p-3 transition-transform duration-500 group-hover:scale-105"
               />
             </div>
             <span className="font-semibold uppercase tracking-[0.18em] text-[#515f78] text-[0.65rem]">
-              {category.kicker[locale]}
+              {product.series || "FGPOOL"}
             </span>
             <h3 className="mt-1 text-base font-bold leading-snug text-ink sm:text-lg">
-              {category.name[locale]}
+              {product.title}
             </h3>
+            <p className="mt-1 line-clamp-2 text-xs leading-5 text-ink/55">
+              {product.short_description || product.description}
+            </p>
           </Link>
         ))}
       </div>

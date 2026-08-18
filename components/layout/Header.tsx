@@ -4,9 +4,9 @@ import {ChevronDown, Menu, Search, X} from "lucide-react";
 import {usePathname, useRouter} from "next/navigation";
 import {useTranslations} from "next-intl";
 import {useEffect, useMemo, useRef, useState} from "react";
-import {Link} from "@/i18n/navigation";
+import {getLocalizedHref, Link} from "@/i18n/navigation";
 import type {Locale} from "@/i18n/routing";
-import {getFeaturedCategories, type ProductCategory} from "@/lib/api/catalog";
+import type {ProductCategory} from "@/lib/api/catalog";
 import {Logo} from "./Logo";
 
 const navItems = [
@@ -18,7 +18,13 @@ const navItems = [
   {key: "contact", href: "/contact"},
 ] as const;
 
-export function Header({locale}: {locale: Locale}) {
+export function Header({
+  locale,
+  categories,
+}: {
+  locale: Locale;
+  categories: ProductCategory[];
+}) {
   const t = useTranslations("nav");
   const tHome = useTranslations("home");
   const pathname = usePathname() ?? "";
@@ -27,19 +33,17 @@ export function Header({locale}: {locale: Locale}) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [query, setQuery] = useState("");
-  const [categories, setCategories] = useState<ProductCategory[]>([]);
   const searchInputRef = useRef<HTMLInputElement>(null);
 
   const panelOpen = searchOpen || mobileOpen;
 
-  const activeLink = (href: string) =>
-    href === "/"
-      ? pathname === `/${locale}` || pathname === `/${locale}/`
-      : pathname === `/${locale}${href}` || pathname.startsWith(`/${locale}${href}/`);
+  const activeLink = (href: string) => {
+    const localizedHref = getLocalizedHref(href, locale);
 
-  useEffect(() => {
-    getFeaturedCategories().then(setCategories);
-  }, []);
+    return href === "/"
+      ? pathname === localizedHref || pathname === `${localizedHref}/`
+      : pathname === localizedHref || pathname.startsWith(`${localizedHref}/`);
+  };
 
   useEffect(() => {
     if (searchOpen) {
@@ -108,12 +112,12 @@ export function Header({locale}: {locale: Locale}) {
     const target = query.trim()
       ? `/products?search=${encodeURIComponent(query.trim())}`
       : "/products";
-    router.push(`/${locale}${target}`);
+    router.push(getLocalizedHref(target, locale));
     closePanels();
   }
 
   function goToCategory(slug: string) {
-    router.push(`/${locale}/products/${slug}`);
+    router.push(getLocalizedHref(`/products/category/${slug}`, locale));
     closePanels();
   }
 
