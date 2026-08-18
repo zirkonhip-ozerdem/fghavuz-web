@@ -9,16 +9,30 @@ import type {Locale} from "@/i18n/routing";
 import {getBlogPostBySlug} from "@/lib/api/blog";
 import {toMetadata} from "@/lib/api/seo";
 
+// next-intl'in middleware rewrite'i sonrasi Next.js dinamik segment
+// parametreleri Arapca gibi non-ASCII slug'lar icin decode edilmemis
+// (hala "%D8%A7..." formunda) gelebiliyor; API'den donen gercek deger
+// zaten decode edilmis oldugundan karsilastirma hep basarisiz oluyordu.
+function decodeSlugParam(value: string): string {
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return value;
+  }
+}
+
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{locale: string; slug: string}>;
+  params: Promise<{locale: string; categorySlug: string; slug: string}>;
 }): Promise<Metadata> {
-  const {locale: rawLocale, slug} = await params;
+  const {locale: rawLocale, categorySlug: rawCategorySlug, slug: rawSlug} = await params;
   const locale = rawLocale as Locale;
+  const categorySlug = decodeSlugParam(rawCategorySlug);
+  const slug = decodeSlugParam(rawSlug);
   const post = await getBlogPostBySlug(slug, locale);
 
-  if (!post) {
+  if (!post || post.categorySlug !== categorySlug) {
     return {};
   }
 
@@ -31,13 +45,17 @@ export async function generateMetadata({
 export default async function BlogArticlePage({
   params,
 }: {
-  params: Promise<{locale: string; slug: string}>;
+  params: Promise<{locale: string; categorySlug: string; slug: string}>;
 }) {
-  const {locale: rawLocale, slug} = await params;
+  const {locale: rawLocale, categorySlug: rawCategorySlug, slug: rawSlug} = await params;
   const locale = rawLocale as Locale;
+  const categorySlug = decodeSlugParam(rawCategorySlug);
+  const slug = decodeSlugParam(rawSlug);
   const post = await getBlogPostBySlug(slug, locale);
 
-  if (!post) {
+  // Yanlis kategori altindaki bir post slug'ini ayni icerigin duplike
+  // URL'i olarak indekslenmesini onlemek icin, kategori uyusmuyorsa 404.
+  if (!post || post.categorySlug !== categorySlug) {
     notFound();
   }
 

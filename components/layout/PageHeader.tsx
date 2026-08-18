@@ -2,22 +2,58 @@ import {ChevronRight} from "lucide-react";
 import Image from "next/image";
 import {Link} from "@/i18n/navigation";
 import type {Locale} from "@/i18n/routing";
+import {CrabSwimmer} from "./CrabSwimmer";
 
 export type BreadcrumbItem = {
   label: string;
   href?: string;
 };
 
+const CRABS = [
+  {
+    keyframe: "crab-walk-a",
+    duration: "28s",
+    delay: "-5s",
+    bobDuration: "0.42s",
+    bobDelay: "-0.1s",
+    bottom: "0.15rem",
+    size: "h-3.5 w-6 sm:h-4 sm:w-7",
+    opacity: "opacity-90",
+  },
+  {
+    keyframe: "crab-walk-b",
+    duration: "34s",
+    delay: "-17s",
+    bobDuration: "0.5s",
+    bobDelay: "-0.3s",
+    bottom: "0.55rem",
+    size: "h-3 w-5 sm:h-3.5 sm:w-6",
+    opacity: "opacity-70",
+  },
+  {
+    keyframe: "crab-walk-c",
+    duration: "24s",
+    delay: "-11s",
+    bobDuration: "0.36s",
+    bobDelay: "-0.2s",
+    bottom: "0rem",
+    size: "h-2.5 w-4 sm:h-3 sm:w-5",
+    opacity: "opacity-80",
+  },
+];
+
 export function PageHeader({
   locale,
   title,
   description,
   breadcrumbs,
+  crabs = false,
 }: {
   locale: Locale;
   title: string;
   description?: string;
   breadcrumbs: BreadcrumbItem[];
+  crabs?: boolean;
 }) {
   return (
     <section className="relative overflow-hidden bg-ink pt-36 text-white sm:pt-40">
@@ -64,11 +100,15 @@ export function PageHeader({
         ) : null}
       </div>
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-10 overflow-hidden sm:h-14" aria-hidden="true">
+      <div
+        dir="ltr"
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-10 overflow-hidden sm:h-14"
+        aria-hidden="true"
+      >
         <svg
           viewBox="0 0 2880 120"
           preserveAspectRatio="none"
-          className="absolute bottom-0 h-full w-[200%] animate-wave-slow text-[#9FDCF6]/70"
+          className="absolute bottom-0 left-0 h-full w-[200%] animate-wave-slow text-[#9FDCF6]/70"
         >
           <path
             fill="currentColor"
@@ -78,7 +118,7 @@ export function PageHeader({
         <svg
           viewBox="0 0 2880 120"
           preserveAspectRatio="none"
-          className="absolute bottom-0 h-full w-[200%] animate-wave-fast text-[#1CA9E3]/55"
+          className="absolute bottom-0 left-0 h-full w-[200%] animate-wave-fast text-[#1CA9E3]/55"
         >
           <path
             fill="currentColor"
@@ -87,6 +127,42 @@ export function PageHeader({
         </svg>
         <div className="absolute inset-x-0 bottom-0 h-px bg-white/18" />
       </div>
+
+      {crabs ? (
+        <div
+          dir="ltr"
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-5 overflow-hidden sm:h-6"
+          aria-hidden="true"
+        >
+          {CRABS.map((crab, index) => (
+            <div
+              key={index}
+              className="absolute"
+              style={{
+                bottom: crab.bottom,
+                left: 0,
+                animationName: crab.keyframe,
+                animationDuration: crab.duration,
+                animationTimingFunction: "ease-in-out",
+                animationIterationCount: "infinite",
+                animationDirection: "alternate",
+                animationDelay: crab.delay,
+              }}
+            >
+              <CrabSwimmer
+                className={`text-[#FF6B4A] drop-shadow-[0_1px_1px_rgba(17,17,20,0.35)] ${crab.size} ${crab.opacity}`}
+                style={{
+                  animationName: "crab-step-bob",
+                  animationDuration: crab.bobDuration,
+                  animationTimingFunction: "steps(2, jump-none)",
+                  animationIterationCount: "infinite",
+                  animationDelay: crab.bobDelay,
+                }}
+              />
+            </div>
+          ))}
+        </div>
+      ) : null}
     </section>
   );
 }

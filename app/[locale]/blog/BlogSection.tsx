@@ -93,7 +93,7 @@ export function BlogSection({
       <div className="space-y-8">
         {showFeatured && selectedFeaturedArticle && (
           <Link
-            href={`/blog/${selectedFeaturedArticle.slug}`}
+            href={`/blog/${selectedFeaturedArticle.filter}/${selectedFeaturedArticle.slug}`}
             locale={locale}
             className="group block overflow-hidden rounded-[1.5rem] bg-white shadow-[0_25px_80px_rgba(17,17,20,0.12)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_30px_90px_rgba(17,17,20,0.15)]"
           >

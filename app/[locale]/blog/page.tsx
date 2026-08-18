@@ -66,6 +66,7 @@ export default async function BlogPage({
           {label: navT("home"), href: "/"},
           {label: navT("blog")},
         ]}
+        crabs
       />
 
       <section className="mx-auto grid max-w-7xl gap-8 px-5 py-14 sm:px-8 sm:py-16 lg:grid-cols-[1.75fr_1fr] lg:px-0">

@@ -7,6 +7,7 @@ import {useEffect, useMemo, useRef, useState} from "react";
 import {getLocalizedHref, Link} from "@/i18n/navigation";
 import type {Locale} from "@/i18n/routing";
 import type {ProductCategory} from "@/lib/api/catalog";
+import type {SiteSettings} from "@/lib/api/siteSettings";
 import {Logo} from "./Logo";
 
 const navItems = [
@@ -21,9 +22,11 @@ const navItems = [
 export function Header({
   locale,
   categories,
+  siteSettings,
 }: {
   locale: Locale;
   categories: ProductCategory[];
+  siteSettings: SiteSettings;
 }) {
   const t = useTranslations("nav");
   const tHome = useTranslations("home");
@@ -125,7 +128,7 @@ export function Header({
     <>
       <nav className="fixed top-9 w-full z-50 h-20 bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-sm transition-all duration-500">
         <div className="flex h-full items-center justify-between px-5 md:px-8 max-w-7xl mx-auto">
-          <Logo locale={locale} />
+          <Logo locale={locale} logoUrl={siteSettings.logo} siteName={siteSettings.siteName} />
 
           <div className="hidden items-center gap-5 lg:flex xl:gap-8">
             {navItems.map((item) => (

@@ -31,10 +31,10 @@ export const pathnames = {
     tr: "/blog",
     ar: "/blog",
   },
-  "/blog/[slug]": {
-    en: "/blog/[slug]",
-    tr: "/blog/[slug]",
-    ar: "/blog/[slug]",
+  "/blog/category/[categorySlug]/[slug]": {
+    en: "/blog/[categorySlug]/[slug]",
+    tr: "/blog/[categorySlug]/[slug]",
+    ar: "/blog/[categorySlug]/[slug]",
   },
   "/catalog": {
     en: "/catalog",
