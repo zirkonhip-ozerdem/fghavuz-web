@@ -105,6 +105,120 @@ textarea {
   }
 }
 
+@keyframes crab-walk-a {
+  0%,
+  100% {
+    translate: 0vw 0;
+    rotate: -2deg;
+  }
+  16% {
+    translate: 16vw 0;
+    rotate: 2deg;
+  }
+  34% {
+    translate: 38vw 0;
+    rotate: -2deg;
+  }
+  52% {
+    translate: 56vw 0;
+    rotate: 2deg;
+  }
+  70% {
+    translate: 74vw 0;
+    rotate: -2deg;
+  }
+  86% {
+    translate: 90vw 0;
+    rotate: 2deg;
+  }
+  98% {
+    translate: 98vw 0;
+    rotate: -2deg;
+  }
+}
+
+@keyframes crab-walk-b {
+  0%,
+  100% {
+    translate: 2vw 0;
+    rotate: 2deg;
+  }
+  20% {
+    translate: 24vw 0;
+    rotate: -2deg;
+  }
+  40% {
+    translate: 44vw 0;
+    rotate: 2deg;
+  }
+  60% {
+    translate: 64vw 0;
+    rotate: -2deg;
+  }
+  80% {
+    translate: 82vw 0;
+    rotate: 2deg;
+  }
+  97% {
+    translate: 97vw 0;
+    rotate: -2deg;
+  }
+}
+
+@keyframes crab-walk-c {
+  0%,
+  100% {
+    translate: 1vw 0;
+    rotate: -2deg;
+  }
+  18% {
+    translate: 14vw 0;
+    rotate: 2deg;
+  }
+  36% {
+    translate: 32vw 0;
+    rotate: -2deg;
+  }
+  55% {
+    translate: 50vw 0;
+    rotate: 2deg;
+  }
+  74% {
+    translate: 70vw 0;
+    rotate: -2deg;
+  }
+  96% {
+    translate: 96vw 0;
+    rotate: 2deg;
+  }
+}
+
+@keyframes crab-step-bob {
+  0%,
+  100% {
+    transform: translateY(0) scaleY(1);
+  }
+  50% {
+    transform: translateY(-3px) scaleY(0.92);
+  }
+}
+
+@keyframes crab-legs-scuttle {
+  0%,
+  100% {
+    transform: rotate(-6deg);
+  }
+  50% {
+    transform: rotate(6deg);
+  }
+}
+
+.crab-legs {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: crab-legs-scuttle 0.4s steps(2, jump-none) infinite;
+}
+
 @keyframes card-sway {
   0%,
   100% {

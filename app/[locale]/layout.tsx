@@ -38,27 +38,29 @@ export async function generateMetadata({
     ? rawLocale
     : routing.defaultLocale;
   const t = await getTranslations({locale, namespace: "meta"});
+  const siteSettings = await getSiteSettings(locale);
+  const title = siteSettings.siteName || t("title");
   const languages = Object.fromEntries(
     routing.locales.map((item) => [item, `/${item}`]),
   );
+  const favicon = siteSettings.favicon || "/favicon.png";
+  const faviconType = favicon.endsWith(".svg") ? "image/svg+xml" : "image/png";
 
   return {
-    title: t("title"),
+    title,
     description: t("description"),
     metadataBase: new URL("https://fgpool.example"),
     icons: {
-      icon: [
-        {url: "/favicon.png", type: "image/png"},
-      ],
-      shortcut: "/favicon.png",
-      apple: "/favicon.png",
+      icon: [{url: favicon, type: faviconType}],
+      shortcut: favicon,
+      apple: favicon,
     },
     alternates: {
       canonical: `/${locale}`,
       languages,
     },
     openGraph: {
-      title: t("title"),
+      title,
       description: t("description"),
       type: "website",
       locale,
@@ -93,7 +95,7 @@ export default async function LocaleLayout({
       <body>
         <NextIntlClientProvider messages={messages}>
           <TopHeader locale={locale} siteSettings={siteSettings} />
-          <Header locale={locale} categories={categories} />
+          <Header locale={locale} categories={categories} siteSettings={siteSettings} />
           {children}
           <Footer locale={locale} siteSettings={siteSettings} />
           <FabButton locale={locale} whatsappHref={siteSettings.whatsappHref} />

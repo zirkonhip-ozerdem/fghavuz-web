@@ -34,7 +34,11 @@ export async function Footer({
     <footer id="site-footer" className="bg-ink text-white">
       <div className="mx-auto grid max-w-7xl gap-10 px-5 py-12 sm:px-8 sm:grid-cols-2 lg:grid-cols-5">
         <div className="sm:col-span-2 lg:col-span-1">
-          <Logo locale={locale} />
+          <Logo
+            locale={locale}
+            logoUrl={siteSettings.footerLogo || siteSettings.logo}
+            siteName={siteSettings.siteName}
+          />
           <p className="mt-5 max-w-sm text-sm leading-6 text-white/58">
             {siteSettings.footerText || t("footer.summary")}
           </p>

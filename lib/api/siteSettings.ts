@@ -3,6 +3,10 @@ import {CONTACT} from "@/lib/contact";
 import {apiGet} from "./client";
 
 export type SiteSettings = {
+  siteName: string | null;
+  logo: string | null;
+  favicon: string | null;
+  footerLogo: string | null;
   phone: string;
   phoneHref: string;
   email: string;
@@ -23,6 +27,10 @@ export type SiteSettings = {
 };
 
 type RawSiteSettings = {
+  site_name: string | null;
+  logo: string | null;
+  favicon: string | null;
+  footer_logo: string | null;
   phone: string | null;
   email: string | null;
   whatsapp: string | null;
@@ -36,6 +44,10 @@ type RawSiteSettings = {
 };
 
 const FALLBACK_SITE_SETTINGS: SiteSettings = {
+  siteName: null,
+  logo: null,
+  favicon: null,
+  footerLogo: null,
   phone: CONTACT.phone,
   phoneHref: CONTACT.phoneHref,
   email: CONTACT.email,
@@ -69,6 +81,10 @@ function mapSiteSettings(raw: RawSiteSettings): SiteSettings {
   const whatsapp = raw.whatsapp || phone;
 
   return {
+    siteName: raw.site_name || null,
+    logo: raw.logo || null,
+    favicon: raw.favicon || null,
+    footerLogo: raw.footer_logo || null,
     phone,
     phoneHref: toTelHref(phone),
     email,

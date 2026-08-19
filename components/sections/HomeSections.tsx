@@ -183,7 +183,7 @@ export async function FeaturedBlogSection({
           {posts.map((post) => (
             <Link
               key={post.id}
-              href={`/blog/${post.slug}`}
+              href={`/blog/${post.categorySlug}/${post.slug}`}
               locale={locale}
               className="group overflow-hidden rounded-2xl border border-ink/8 bg-white shadow-none transition-shadow duration-300 hover:shadow-[0_0_0_1px_rgba(37,99,235,0.22),0_16px_32px_rgba(37,99,235,0.12)] hover:[animation:card-sway_1.4s_ease-in-out_infinite]"
             >
