@@ -1,7 +1,7 @@
-import {UploadCloud} from "lucide-react";
 import {getTranslations} from "next-intl/server";
 import {PageHeader} from "@/components/layout/PageHeader";
 import type {Locale} from "@/i18n/routing";
+import QuoteForm from "@/components/sections/quote/QuoteForm";
 
 export default async function QuotePage({
   params,
@@ -12,6 +12,25 @@ export default async function QuotePage({
   const locale = rawLocale as Locale;
   const t = await getTranslations({locale, namespace: "Quote"});
   const navT = await getTranslations({locale, namespace: "nav"});
+
+  const formDict = {
+    nameLabel: t("nameLabel"),
+    namePlaceholder: t("namePlaceholder"),
+    emailLabel: t("emailLabel"),
+    emailPlaceholder: t("emailPlaceholder"),
+    phoneLabel: t("phoneLabel"),
+    phonePlaceholder: t("phonePlaceholder"),
+    fileLabel: t("fileLabel"),
+    fileSelect: t("fileSelect"),
+    fileDrag: t("fileDrag"),
+    fileTypes: t("fileTypes"),
+    messageLabel: t("messageLabel"),
+    messagePlaceholder: t("messagePlaceholder"),
+    submitButton: t("submitButton"),
+    sending: "Gönderiliyor...",
+    successMessage: "Teklif talebiniz başarıyla alındı! Ekibimiz en kısa sürede size özel fiyat çalışması ile dönüş yapacaktır.",
+    errorMessage: "Bir hata oluştu. Lütfen bilgilerinizi kontrol edip tekrar deneyin."
+  };
 
   return (
     <main className="bg-gray-50 min-h-screen pb-16">
@@ -89,63 +108,8 @@ export default async function QuotePage({
             <div className="bg-white p-8 md:p-10 rounded-lg shadow-sm border border-gray-100 h-full">
               <h2 className="text-2xl font-bold text-slate-900 mb-6">{t("formTitle")}</h2>
               
-              <form className="flex flex-col">
-                
-                <div className="mb-6">
-                  <label htmlFor="nameCompany" className="block text-sm font-medium text-gray-700 mb-2">
-                    {t("nameLabel")} <span className="text-red-500">*</span>
-                  </label>
-                  <input required type="text" id="nameCompany" className="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-900" placeholder={t("namePlaceholder")} />
-                </div>
+              <QuoteForm dict={formDict} />
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                  <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                      {t("emailLabel")} <span className="text-red-500">*</span>
-                    </label>
-                    <input required type="email" id="email" className="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-900" placeholder={t("emailPlaceholder")} />
-                  </div>
-                  <div>
-                    <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                      {t("phoneLabel")} <span className="text-red-500">*</span>
-                    </label>
-                    <input required type="tel" id="phone" className="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-900" placeholder={t("phonePlaceholder")} />
-                  </div>
-                </div>
-
-                <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">
-                    {t("fileLabel")}
-                  </label>
-                  <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md bg-gray-50 hover:bg-gray-100 transition-colors">
-                    <div className="space-y-1 text-center">
-                      <UploadCloud className="mx-auto h-12 w-12 text-gray-400" />
-                      <div className="flex justify-center text-sm text-gray-600 mt-4">
-                        <label htmlFor="file-upload" className="relative cursor-pointer rounded-md font-medium text-red-500 hover:text-red-600 focus-within:outline-none">
-                          <span>{t("fileSelect")}</span>
-                          <input id="file-upload" name="file-upload" type="file" className="sr-only" accept=".pdf,.doc,.docx,.txt,.xls,.xlsx" />
-                        </label>
-                        <p className="pl-1">{t("fileDrag")}</p>
-                      </div>
-                      <p className="text-xs text-gray-500 mt-2">{t("fileTypes")}</p>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mb-8">
-                  <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
-                    {t("messageLabel")}
-                  </label>
-                  <textarea id="message" rows={6} className="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-900 resize-none" placeholder={t("messagePlaceholder")}></textarea>
-                </div>
-
-                <div>
-                  <button type="submit" className="bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-10 rounded transition-colors duration-300 w-full sm:w-auto shadow-sm">
-                    {t("submitButton")}
-                  </button>
-                </div>
-                
-              </form>
             </div>
           </div>
           

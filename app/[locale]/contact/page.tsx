@@ -1,6 +1,7 @@
 import {getTranslations} from "next-intl/server";
 import {PageHeader} from "@/components/layout/PageHeader";
 import type {Locale} from "@/i18n/routing";
+import ContactForm from "@/components/sections/contact/ContactForm";
 
 export default async function ContactPage({
   params,
@@ -11,6 +12,19 @@ export default async function ContactPage({
   const locale = rawLocale as Locale;
   const t = await getTranslations({locale, namespace: "Contact"});
   const navT = await getTranslations({locale, namespace: "nav"});
+
+  const formDict = {
+    nameLabel: t("nameLabel"),
+    namePlaceholder: t("namePlaceholder") || "Adınız Soyadınız",
+    emailLabel: t("emailFormLabel") || t("emailLabel") || "E-posta",
+    emailPlaceholder: t("emailPlaceholder") || "E-posta Adresiniz",
+    messageLabel: t("messageLabel"),
+    messagePlaceholder: t("messagePlaceholder") || "Mesajınızı buraya yazın...",
+    submitButton: t("submitButton"),
+    sending: "Gönderiliyor...",
+    successMessage: "Mesajınız başarıyla gönderildi! Ekibimiz en kısa sürede sizinle iletişime geçecektir.",
+    errorMessage: "Bir hata oluştu. Lütfen bilgilerinizi kontrol edip tekrar deneyin."
+  };
 
   return (
     <main className="bg-gray-50 min-h-screen pb-16">
@@ -58,29 +72,7 @@ export default async function ContactPage({
           <div className="lg:col-span-2 bg-white p-8 md:p-10 rounded-lg shadow-sm border border-gray-100 flex flex-col h-full">
             <h2 className="text-2xl font-bold text-slate-900 mb-6">{t("formTitle")}</h2>
             
-            <form className="flex flex-col flex-1">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">{t("nameLabel")}</label>
-                  <input type="text" id="name" className="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-900" placeholder={t("namePlaceholder")} />
-                </div>
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">{t("emailFormLabel")}</label>
-                  <input type="email" id="email" className="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-900" placeholder={t("emailPlaceholder")} />
-                </div>
-              </div>
-
-              <div className="flex flex-col flex-1 mb-6">
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">{t("messageLabel")}</label>
-                <textarea id="message" className="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-slate-900 resize-none flex-1" placeholder={t("messagePlaceholder")}></textarea>
-              </div>
-
-              <div className="mt-auto">
-                <button type="button" className="bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-8 rounded transition-colors duration-300 w-full sm:w-auto">
-                  {t("submitButton")}
-                </button>
-              </div>
-            </form>
+            <ContactForm dict={formDict} />
             
           </div>
           
