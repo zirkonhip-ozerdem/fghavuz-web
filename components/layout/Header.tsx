@@ -26,7 +26,7 @@ export function Header({
 }: {
   locale: Locale;
   categories: ProductCategory[];
-  siteSettings: SiteSettings;
+  siteSettings?: SiteSettings | null;
 }) {
   const t = useTranslations("nav");
   const tHome = useTranslations("home");
@@ -128,7 +128,7 @@ export function Header({
     <>
       <nav className="fixed top-9 w-full z-50 h-20 bg-white/80 backdrop-blur-xl border-b border-white/20 shadow-sm transition-all duration-500">
         <div className="flex h-full items-center justify-between px-5 md:px-8 max-w-7xl mx-auto">
-          <Logo locale={locale} logoUrl={siteSettings.logo} siteName={siteSettings.siteName} />
+          <Logo locale={locale} logoUrl={siteSettings?.logo} siteName={siteSettings?.siteName} />
 
           <div className="hidden items-center gap-5 lg:flex xl:gap-8">
             {navItems.map((item) => (

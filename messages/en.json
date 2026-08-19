@@ -268,7 +268,7 @@
     "fileLabel": "Project File or Material List",
     "fileSelect": "Select File",
     "fileDrag": "or drag and drop here",
-    "fileTypes": "PDF, DOC, DOCX, XLS, TXT (Max 10MB)",
+    "fileTypes": "PDF, DOC, DOCX, XLS, XLSX, JPG or PNG (Max 20MB)",
     "messageLabel": "Project Details or Requirements",
     "messagePlaceholder": "Please specify the details of your project, the product quantities you need, etc...",
     "submitButton": "Request Quote"

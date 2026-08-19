@@ -60,7 +60,7 @@ export const pathnames = {
 
 export const routing = defineRouting({
   locales: ["en", "tr", "ar"],
-  defaultLocale: "en",
+  defaultLocale: "tr",
   localePrefix: "always",
   pathnames,
 });

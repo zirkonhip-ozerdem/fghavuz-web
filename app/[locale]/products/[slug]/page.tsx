@@ -100,7 +100,6 @@ export default async function ProductDetailPage({
       <PageHeader
         locale={locale}
         title={product.title}
-        description={product.description}
         breadcrumbs={breadcrumbs}
       />
 

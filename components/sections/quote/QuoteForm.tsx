@@ -2,10 +2,12 @@
 
 import { useState } from "react";
 import { UploadCloud, FileText } from "lucide-react";
+import {getApiBaseUrl, readApiError} from "@/lib/api/client";
 
 export default function QuoteForm({ dict }: { dict: Record<string, string> }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const [formData, setFormData] = useState({
@@ -31,11 +33,9 @@ export default function QuoteForm({ dict }: { dict: Record<string, string> }) {
     e.preventDefault();
     setIsSubmitting(true);
     setStatus("idle");
+    setErrorMessage("");
 
     try {
-      const baseUrl =
-        process.env.NEXT_PUBLIC_BACKEND_URL || "http://127.0.0.1:8001";
-
       const data = new FormData();
       data.append("name", formData.name);
       data.append("email", formData.email);
@@ -46,7 +46,7 @@ export default function QuoteForm({ dict }: { dict: Record<string, string> }) {
         data.append("uploaded_file", selectedFile);
       }
 
-      const res = await fetch(`${baseUrl}/api/v1/quote-requests`, {
+      const res = await fetch(`${getApiBaseUrl()}/quote-requests`, {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -64,8 +64,14 @@ export default function QuoteForm({ dict }: { dict: Record<string, string> }) {
         });
         setSelectedFile(null);
       } else {
-        const errorData = await res.json();
-        console.error("Backend reddetti, dönen hatalar:", errorData);
+        const errorData = await readApiError(res);
+        console.error("Backend reddetti:", {
+          status: res.status,
+          statusText: res.statusText,
+          payload: errorData.payload,
+          text: errorData.text,
+        });
+        setErrorMessage(errorData.message);
         setStatus("error");
       }
     } catch (error) {
@@ -88,7 +94,7 @@ export default function QuoteForm({ dict }: { dict: Record<string, string> }) {
       {status === "error" && (
         <div className="mb-6 p-4 bg-red-50 text-red-700 border border-red-200 rounded-md flex items-center shadow-sm">
           <span className="mr-3 text-xl">⚠</span>
-          <p>{dict.errorMessage}</p>
+          <p>{errorMessage || dict.errorMessage}</p>
         </div>
       )}
 
@@ -191,7 +197,7 @@ export default function QuoteForm({ dict }: { dict: Record<string, string> }) {
                       type="file"
                       onChange={handleFileChange}
                       className="sr-only"
-                      accept=".pdf,.doc,.docx,.txt,.xls,.xlsx,.jpg,.jpeg,.png"
+                      accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png"
                     />
                   </label>
                   <p className="pl-1">{dict.fileDrag}</p>

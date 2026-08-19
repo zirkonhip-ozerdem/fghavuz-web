@@ -268,7 +268,7 @@
     "fileLabel": "Proje Dosyası veya Malzeme Listesi",
     "fileSelect": "Dosya Seçin",
     "fileDrag": "veya buraya sürükleyin",
-    "fileTypes": "PDF, DOC, DOCX, XLS, TXT (Maksimum 10MB)",
+    "fileTypes": "PDF, DOC, DOCX, XLS, XLSX, JPG veya PNG (Maksimum 20MB)",
     "messageLabel": "Proje Detayı veya İhtiyaçlarınız",
     "messagePlaceholder": "Lütfen projenizin detaylarını, ihtiyaç duyduğunuz ürün miktarlarını vb. belirtin...",
     "submitButton": "Teklif İste"

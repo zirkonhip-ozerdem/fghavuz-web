@@ -43,7 +43,7 @@ type RawSiteSettings = {
   yna_ekibi_url: string | null;
 };
 
-const FALLBACK_SITE_SETTINGS: SiteSettings = {
+export const FALLBACK_SITE_SETTINGS: SiteSettings = {
   siteName: null,
   logo: null,
   favicon: null,

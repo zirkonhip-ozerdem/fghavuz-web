@@ -9,7 +9,7 @@ import {Footer} from "@/components/layout/Footer";
 import {Header} from "@/components/layout/Header";
 import {TopHeader} from "@/components/layout/TopHeader";
 import {getFeaturedCategories} from "@/lib/api/catalog";
-import {getSiteSettings} from "@/lib/api/siteSettings";
+import {FALLBACK_SITE_SETTINGS, getSiteSettings} from "@/lib/api/siteSettings";
 import "../globals.css";
 
 const inter = Inter({
@@ -88,17 +88,18 @@ export default async function LocaleLayout({
     getSiteSettings(locale),
     getFeaturedCategories(locale),
   ]);
+  const safeSiteSettings = siteSettings ?? FALLBACK_SITE_SETTINGS;
   const dir = locale === "ar" ? "rtl" : "ltr";
 
   return (
-    <html lang={locale} dir={dir} className={`${inter.variable} ${manrope.variable}`}>
+    <html lang={locale} dir={dir} data-scroll-behavior="smooth" className={`${inter.variable} ${manrope.variable}`}>
       <body>
         <NextIntlClientProvider messages={messages}>
-          <TopHeader locale={locale} siteSettings={siteSettings} />
-          <Header locale={locale} categories={categories} siteSettings={siteSettings} />
+          <TopHeader locale={locale} siteSettings={safeSiteSettings} />
+          <Header locale={locale} categories={categories} siteSettings={safeSiteSettings} />
           {children}
-          <Footer locale={locale} siteSettings={siteSettings} />
-          <FabButton locale={locale} whatsappHref={siteSettings.whatsappHref} />
+          <Footer locale={locale} siteSettings={safeSiteSettings} />
+          <FabButton locale={locale} whatsappHref={safeSiteSettings.whatsappHref} />
         </NextIntlClientProvider>
       </body>
     </html>

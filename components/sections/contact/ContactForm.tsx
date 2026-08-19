@@ -1,10 +1,12 @@
 "use client";
 
 import { useState } from "react";
+import {getApiBaseUrl, readApiError} from "@/lib/api/client";
 
 export default function ContactForm({ dict }: { dict: Record<string, string> }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [status, setStatus] = useState<"idle" | "success" | "error">("idle");
+  const [errorMessage, setErrorMessage] = useState("");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -19,11 +21,10 @@ export default function ContactForm({ dict }: { dict: Record<string, string> }) 
     e.preventDefault();
     setIsSubmitting(true);
     setStatus("idle");
+    setErrorMessage("");
 
     try {
-      const baseUrl = process.env.NEXT_PUBLIC_BACKEND_URL || "http://localhost:8001";
-      
-      const res = await fetch(`${baseUrl}/api/v1/contact/messages`, {
+      const res = await fetch(`${getApiBaseUrl()}/contact/messages`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -36,11 +37,18 @@ export default function ContactForm({ dict }: { dict: Record<string, string> }) 
         setStatus("success");
         setFormData({ name: "", email: "", message: "" });
       } else {
-        console.error("Backend veriyi reddetti. Hata kodu:", res.status);
+        const errorData = await readApiError(res);
+        console.error("Backend iletişim mesajını reddetti:", {
+          status: res.status,
+          statusText: res.statusText,
+          payload: errorData.payload,
+          text: errorData.text,
+        });
+        setErrorMessage(errorData.message);
         setStatus("error");
       }
     } catch (error) {
-      console.error("Kargocu adresi bulamadı:", error);
+      console.error("İletişim mesajı gönderilirken hata oluştu:", error);
       setStatus("error");
     } finally {
       setIsSubmitting(false);
@@ -59,7 +67,7 @@ export default function ContactForm({ dict }: { dict: Record<string, string> }) 
       {status === "error" && (
         <div className="mb-6 p-4 bg-red-50 text-red-700 border border-red-200 rounded-md flex items-center shadow-sm">
           <span className="mr-3 text-xl">⚠</span>
-          <p>{dict.errorMessage}</p>
+          <p>{errorMessage || dict.errorMessage}</p>
         </div>
       )}
 

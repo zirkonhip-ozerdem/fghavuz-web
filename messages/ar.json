@@ -268,7 +268,7 @@
     "fileLabel": "ملف المشروع أو قائمة المواد",
     "fileSelect": "اختر ملف",
     "fileDrag": "أو اسحب واسقط هنا",
-    "fileTypes": "PDF, DOC, DOCX, XLS, TXT (الحد الأقصى 10 ميغابايت)",
+    "fileTypes": "PDF, DOC, DOCX, XLS, XLSX, JPG أو PNG (الحد الأقصى 20 ميغابايت)",
     "messageLabel": "تفاصيل المشروع أو المتطلبات",
     "messagePlaceholder": "يرجى تحديد تفاصيل مشروعك، وكميات المنتجات التي تحتاجها، إلخ...",
     "submitButton": "طلب عرض أسعار"

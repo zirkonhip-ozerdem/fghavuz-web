@@ -10,8 +10,52 @@ type ApiEnvelope<T> = {
   message: string | null;
 };
 
-function getApiBaseUrl() {
+export function getApiBaseUrl() {
   return (process.env.NEXT_PUBLIC_API_BASE_URL || DEFAULT_API_BASE_URL).replace(/\/$/, "");
+}
+
+function firstValidationError(errors: unknown): string | null {
+  if (!errors || typeof errors !== "object") {
+    return null;
+  }
+
+  for (const value of Object.values(errors as Record<string, unknown>)) {
+    if (Array.isArray(value)) {
+      const first = value.find((item) => typeof item === "string");
+      if (typeof first === "string") {
+        return first;
+      }
+    }
+
+    if (typeof value === "string") {
+      return value;
+    }
+  }
+
+  return null;
+}
+
+export async function readApiError(response: Response) {
+  const text = await response.text();
+  let payload: unknown = null;
+
+  try {
+    payload = text ? JSON.parse(text) : null;
+  } catch {
+    payload = null;
+  }
+
+  const record = payload && typeof payload === "object"
+    ? payload as Record<string, unknown>
+    : null;
+
+  const message =
+    firstValidationError(record?.errors) ||
+    (typeof record?.message === "string" ? record.message : null) ||
+    (text && !record ? text : null) ||
+    `API isteği başarısız oldu (${response.status}).`;
+
+  return {message, payload, text};
 }
 
 /** Thin fetch wrapper for the Laravel `{success, data, message}` API envelope. */
