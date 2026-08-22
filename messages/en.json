@@ -316,5 +316,9 @@
     "location": "Location",
     "locationText": "Istanbul, Türkiye",
     "instagram": "Instagram"
+  },
+  "Products": {
+    "title": "Our Products",
+    "description": "Discover the highest quality and long-lasting equipment for your pool."
   }
 }
