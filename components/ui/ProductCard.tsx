@@ -1,33 +1,39 @@
 import Image from "next/image";
-import Link from "next/link";
+import {Link} from "@/i18n/navigation";
+import type {Locale} from "@/i18n/routing";
 
-interface ProductCardProps {
-  product: {
-    name: string;
-    slug: string;
-    image: string;
-  };
-  locale: string;
+export interface ProductCardItem {
+  id: string;
+  name: string;
+  image: string;
+  href: string;
 }
 
-export function ProductCard({ product, locale }: ProductCardProps) {
+export function ProductCard({
+  item,
+  locale,
+}: {
+  item: ProductCardItem;
+  locale: Locale;
+}) {
   return (
-    <Link 
-      href={`/${locale}/products/${product.slug}`} 
-      className="group flex flex-col items-center text-center p-2 rounded-lg hover:bg-slate-50 transition-colors"
+    <Link
+      href={item.href}
+      locale={locale}
+      className="group flex flex-col items-center rounded-lg p-2 text-center transition-colors hover:bg-slate-50"
     >
-      <div className="relative w-full aspect-square mb-4 overflow-hidden bg-white flex items-center justify-center">
+      <div className="relative mb-4 flex aspect-square w-full items-center justify-center overflow-hidden bg-white">
         <Image
-          src={product.image}
-          alt={product.name}
+          src={item.image}
+          alt={item.name}
           fill
           unoptimized
           className="object-contain transition-transform duration-300 group-hover:scale-105"
           sizes="(max-width: 768px) 50vw, (max-width: 1200px) 25vw, 16vw"
         />
       </div>
-      <h3 className="text-sm font-semibold text-slate-800 group-hover:text-blue-600 transition-colors line-clamp-2">
-        {product.name}
+      <h3 className="line-clamp-2 text-sm font-semibold text-slate-800 transition-colors group-hover:text-blue-600">
+        {item.name}
       </h3>
     </Link>
   );

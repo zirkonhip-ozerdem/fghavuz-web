@@ -1,31 +1,42 @@
-import { getTranslations } from "next-intl/server";
-import { PageHeader } from "@/components/layout/PageHeader";
-import { ProductGrid } from "@/components/sections/ProductGrid";
-import type { Locale } from "@/i18n/routing";
+import {getTranslations} from "next-intl/server";
+import {PageHeader} from "@/components/layout/PageHeader";
+import {ProductGrid} from "@/components/sections/ProductGrid";
+import type {Locale} from "@/i18n/routing";
+import {getProductCategories} from "@/lib/api/products";
 
 export default async function ProductsPage({
   params,
 }: {
-  params: Promise<{ locale: string }>;
+  params: Promise<{locale: string}>;
 }) {
-  const { locale: rawLocale } = await params;
+  const {locale: rawLocale} = await params;
   const locale = rawLocale as Locale;
-  const t = await getTranslations({ locale, namespace: "Products" });
+  const t = await getTranslations({locale, namespace: "sections"});
+  const navT = await getTranslations({locale, namespace: "nav"});
+  const categories = await getProductCategories(locale);
 
   return (
-    <main className="bg-white min-h-screen pb-20">
+    <main className="min-h-screen bg-white pb-20">
       <PageHeader
         locale={locale}
-        title={t("title")}
-        description={t("description")}
+        title={t("productsTitle")}
+        description={t("productsText")}
         breadcrumbs={[
-          { label: "Anasayfa", href: "/" },
-          { label: "Ürünler" },
+          {label: navT("home"), href: "/"},
+          {label: navT("products")},
         ]}
       />
 
       <div className="pt-12">
-        <ProductGrid locale={locale} />
+        <ProductGrid
+          locale={locale}
+          items={categories.map((category) => ({
+            id: category.id,
+            name: category.name,
+            image: category.image,
+            href: `/products/category/${category.slug}`,
+          }))}
+        />
       </div>
     </main>
   );
