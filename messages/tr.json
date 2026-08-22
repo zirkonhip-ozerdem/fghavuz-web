@@ -316,5 +316,9 @@
     "location": "Konum",
     "locationText": "İstanbul, Türkiye",
     "instagram": "Instagram"
+  },
+  "Products": {
+    "title": "Ürünlerimiz",
+    "description": "Havuzunuz için en kaliteli ve uzun ömürlü ekipmanları keşfedin."
   }
 }
