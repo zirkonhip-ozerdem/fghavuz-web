@@ -1,3 +1,5 @@
+import type {Metadata} from "next";
+import {notFound} from "next/navigation";
 import {getTranslations} from "next-intl/server";
 import {PageHeader, type BreadcrumbItem} from "@/components/layout/PageHeader";
 import ProductCard from "@/components/sections/products/ProductCard";
@@ -9,6 +11,8 @@ import {
   type Product,
   type ProductSubcategory,
 } from "@/lib/api/products";
+import {toMetadata} from "@/lib/api/seo";
+import {getSubcategoryPaths, withCurrent} from "@/lib/api/seoPaths";
 
 const labels = {
   en: {
@@ -62,6 +66,38 @@ function findSubcategory(subcategories: ProductSubcategory[], subcategorySlug: s
   });
 }
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{locale: string; slug: string; subcategorySlug: string}>;
+}): Promise<Metadata> {
+  const {locale: rawLocale, slug, subcategorySlug} = await params;
+  const locale = rawLocale as Locale;
+  const [categories, subcategories] = await Promise.all([
+    getProductCategories(locale),
+    getProductSubcategories(slug, locale),
+  ]);
+  const category = findCategory(categories, slug);
+  const subcategory = findSubcategory(subcategories, subcategorySlug);
+
+  if (!category || !subcategory) return {};
+
+  const current = `/products/category/${category.slug}/${subcategory.slug || subcategory.id}`;
+  const paths = subcategory.id
+    ? withCurrent(await getSubcategoryPaths(category.id, subcategory.id), locale, current)
+    : {[locale]: current};
+
+  return toMetadata(
+    subcategory.seo ?? null,
+    {
+      title: `${subcategory.name} - ${category.name}`,
+      description: subcategory.description || `${subcategory.name} ${labels[locale].descriptionSuffix}`,
+      image: subcategory.image || category.image,
+    },
+    {locale, path: paths},
+  );
+}
+
 export default async function ProductSubcategoryPage({
   params,
 }: {
@@ -77,6 +113,11 @@ export default async function ProductSubcategoryPage({
   ]);
   const currentCategory = findCategory(categories, slug);
   const currentSubcategory = findSubcategory(subcategories, subcategorySlug);
+
+  if (!currentCategory || !currentSubcategory) {
+    notFound();
+  }
+
   const subcategoryProducts = currentSubcategory
     ? allProducts.filter((product) => matchesSubcategory(product, currentSubcategory, subcategorySlug))
     : [];

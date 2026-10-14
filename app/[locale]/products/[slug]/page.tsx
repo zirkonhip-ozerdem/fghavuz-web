@@ -1,9 +1,10 @@
+import type {Metadata} from "next";
 import {getTranslations} from "next-intl/server";
 import {notFound} from "next/navigation";
 import ProductGallery from "@/components/ProductGallery";
 import {PageHeader, type BreadcrumbItem} from "@/components/layout/PageHeader";
 import {ProductDocumentsPreview} from "@/components/sections/products/ProductDocumentsPreview";
-import {Link} from "@/i18n/navigation";
+import {getLocalizedHref, Link} from "@/i18n/navigation";
 import type {Locale} from "@/i18n/routing";
 import {
   getProductBySlug,
@@ -14,12 +15,38 @@ import {
   type ProductCategory,
   type ProductSubcategory,
 } from "@/lib/api/products";
+import {absoluteUrl, jsonLd, plainSummary, SITE_NAME, SITE_URL, toMetadata} from "@/lib/api/seo";
+import {getProductPaths, withCurrent} from "@/lib/api/seoPaths";
 
 export async function generateStaticParams() {
   const products = await getProducts("en");
 
   return ["en", "tr", "ar"].flatMap((locale) =>
     products.map((product) => ({locale, slug: product.slug})),
+  );
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{locale: string; slug: string}>;
+}): Promise<Metadata> {
+  const {locale: rawLocale, slug} = await params;
+  const locale = rawLocale as Locale;
+  const product = await getProductBySlug(slug, locale);
+
+  if (!product) return {};
+
+  const paths = withCurrent(await getProductPaths(product.id), locale, `/products/${product.slug}`);
+
+  return toMetadata(
+    product.seo ?? null,
+    {
+      title: product.title,
+      description: plainSummary(product.short_description || product.description),
+      image: product.image,
+    },
+    {locale, path: paths},
   );
 }
 
@@ -94,9 +121,21 @@ export default async function ProductDetailPage({
     {id: "technical-visuals", title: t("techVisuals"), href: "#", format: "DOC", description: t("pendingVisual")},
   ];
   const documents = product.documents?.length ? product.documents : fallbackDocuments;
+  const productLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.title,
+    description: plainSummary(product.short_description || product.description, 500),
+    image: galleryImages.map(absoluteUrl),
+    url: absoluteUrl(getLocalizedHref(`/products/${product.slug}`, locale)),
+    brand: {"@type": "Brand", name: SITE_NAME},
+    manufacturer: {"@id": `${SITE_URL}/#organization`},
+    ...(category ? {category: category.name} : {}),
+  };
 
   return (
     <main className="bg-gray-50 min-h-screen pb-16">
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(productLd)} />
       <PageHeader
         locale={locale}
         title={product.title}
@@ -132,9 +171,9 @@ export default async function ProductDetailPage({
               </span>
             ) : null}
 
-            <h1 className="mb-4 text-3xl font-bold text-slate-900 md:text-4xl">
+            <h2 className="mb-4 text-3xl font-bold text-slate-900 md:text-4xl">
               {product.title}
-            </h1>
+            </h2>
 
             <p className="mb-8 text-lg text-gray-600">
               {product.description || product.short_description}

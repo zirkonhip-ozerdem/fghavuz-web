@@ -1,10 +1,30 @@
 import {FileText} from "lucide-react";
+import type {Metadata} from "next";
 import {notFound} from "next/navigation";
 import type {Locale} from "@/i18n/routing";
+import {toMetadata} from "@/lib/api/seo";
 import {getLegalDocument, legalDocuments} from "@/lib/data/legal";
 
 export function generateStaticParams() {
   return legalDocuments.map((document) => ({slug: document.slug}));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{locale: string; slug: string}>;
+}): Promise<Metadata> {
+  const {locale: rawLocale, slug} = await params;
+  const locale = rawLocale as Locale;
+  const document = getLegalDocument(slug);
+
+  if (!document) return {};
+
+  return toMetadata(
+    null,
+    {title: document.title[locale], description: document.summary[locale]},
+    {locale, path: `/legal/${document.slug}`},
+  );
 }
 
 export default async function LegalDocumentPage({

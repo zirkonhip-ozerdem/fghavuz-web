@@ -1,6 +1,7 @@
 import {ChevronRight} from "lucide-react";
 import Image from "next/image";
-import {Link} from "@/i18n/navigation";
+import {getLocalizedHref, Link} from "@/i18n/navigation";
+import {absoluteUrl, jsonLd} from "@/lib/api/seo";
 import type {Locale} from "@/i18n/routing";
 import {CrabSwimmer} from "./CrabSwimmer";
 
@@ -55,8 +56,20 @@ export function PageHeader({
   breadcrumbs: BreadcrumbItem[];
   crabs?: boolean;
 }) {
+  const breadcrumbLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: breadcrumbs.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.label,
+      ...(item.href ? {item: absoluteUrl(getLocalizedHref(item.href, locale))} : {}),
+    })),
+  };
+
   return (
     <section className="relative overflow-hidden bg-ink pt-36 text-white sm:pt-40">
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(breadcrumbLd)} />
       <Image
         src="/assets/page-header-bg.png"
         alt=""

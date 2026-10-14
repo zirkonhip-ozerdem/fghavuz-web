@@ -63,7 +63,7 @@ export async function generateMetadata({
   return toMetadata(corporate?.seo ?? seo, {
     title: corporate?.title || t("corporateTitle"),
     description: corporate?.subtitle || t("corporateText"),
-  });
+  }, {locale, path: "/corporate"});
 }
 
 export default async function CorporatePage({

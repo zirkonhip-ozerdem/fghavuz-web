@@ -40,7 +40,7 @@ export async function generateMetadata({
     getTranslations({locale, namespace: "sections"}),
   ]);
 
-  return toMetadata(seo, {title: t("catalogTitle"), description: t("catalogText")});
+  return toMetadata(seo, {title: t("catalogTitle"), description: t("catalogText")}, {locale, path: "/catalog"});
 }
 
 export default async function CatalogPage({

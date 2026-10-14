@@ -1,4 +1,6 @@
 import {ArrowRight} from "lucide-react";
+import type {Metadata} from "next";
+import {notFound} from "next/navigation";
 import {getTranslations} from "next-intl/server";
 import {Link} from "@/i18n/navigation";
 import {PageHeader} from "@/components/layout/PageHeader";
@@ -11,6 +13,8 @@ import {
   type Product,
   type ProductSubcategory,
 } from "@/lib/api/products";
+import {toMetadata} from "@/lib/api/seo";
+import {getCategoryPaths, withCurrent} from "@/lib/api/seoPaths";
 
 const labels = {
   en: {
@@ -109,6 +113,34 @@ function productBelongsToCategory(
   );
 }
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{locale: string; slug: string}>;
+}): Promise<Metadata> {
+  const {locale: rawLocale, slug} = await params;
+  const locale = rawLocale as Locale;
+  const category = findCategory(await getProductCategories(locale), slug);
+
+  if (!category) return {};
+
+  const paths = withCurrent(
+    await getCategoryPaths(category.id),
+    locale,
+    `/products/category/${category.slug}`,
+  );
+
+  return toMetadata(
+    category.seo ?? null,
+    {
+      title: category.name,
+      description: category.description || `${category.name} ${labels[locale].descriptionSuffix}`,
+      image: category.image,
+    },
+    {locale, path: paths},
+  );
+}
+
 export default async function CategoryPage({
   params,
 }: {
@@ -123,6 +155,11 @@ export default async function CategoryPage({
     getProductSubcategories(slug, locale),
   ]);
   const currentCategory = findCategory(categories, slug);
+
+  if (!currentCategory) {
+    notFound();
+  }
+
   const categoryProducts = allProducts.filter((product) => {
     return productBelongsToCategory(product, currentCategory, slug);
   });

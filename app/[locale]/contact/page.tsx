@@ -1,7 +1,24 @@
+import type {Metadata} from "next";
 import {getTranslations} from "next-intl/server";
 import {PageHeader} from "@/components/layout/PageHeader";
 import type {Locale} from "@/i18n/routing";
 import ContactForm from "@/components/sections/contact/ContactForm";
+import {getSeoPage, toMetadata} from "@/lib/api/seo";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{locale: string}>;
+}): Promise<Metadata> {
+  const {locale: rawLocale} = await params;
+  const locale = rawLocale as Locale;
+  const [seo, t] = await Promise.all([
+    getSeoPage("contact", locale),
+    getTranslations({locale, namespace: "Contact"}),
+  ]);
+
+  return toMetadata(seo, {title: t("title"), description: t("description")}, {locale, path: "/contact"});
+}
 
 export default async function ContactPage({
   params,

@@ -35,7 +35,7 @@ export async function generateMetadata({
     getTranslations({locale, namespace: "sections"}),
   ]);
 
-  return toMetadata(seo, {title: t("blogTitle"), description: t("blogText")});
+  return toMetadata(seo, {title: t("blogTitle"), description: t("blogText")}, {locale, path: "/blog"});
 }
 
 export default async function BlogPage({

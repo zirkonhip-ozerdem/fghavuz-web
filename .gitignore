@@ -37,3 +37,6 @@ yarn-error.log*
 # typescript
 next-env.d.ts
 tsconfig.tsbuildinfo
+
+# deployment bundles
+/deploy/

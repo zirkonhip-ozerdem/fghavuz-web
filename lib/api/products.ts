@@ -1,5 +1,6 @@
 import type {Locale} from "@/i18n/routing";
 import {apiGet} from "./client";
+import {mapSeoBlock, type RawSeoBlock, type SeoBlock} from "./seo";
 
 export interface ProductCategory {
   id: string;
@@ -9,6 +10,7 @@ export interface ProductCategory {
   cover_image?: string;
   image: string;
   subcategories?: ProductSubcategory[];
+  seo?: SeoBlock | null;
 }
 
 export interface ProductSubcategory {
@@ -18,6 +20,7 @@ export interface ProductSubcategory {
   slug?: string;
   description?: string;
   image?: string;
+  seo?: SeoBlock | null;
 }
 
 export interface Product {
@@ -37,6 +40,7 @@ export interface Product {
   series: string;
   features: string[];
   featured?: boolean;
+  seo?: SeoBlock | null;
 }
 
 export interface ProductDocument {
@@ -62,6 +66,7 @@ type RawProductCategory = {
   image?: string | null;
   subcategories?: RawProductSubcategory[] | null;
   product_subcategories?: RawProductSubcategory[] | null;
+  seo?: RawSeoBlock | null;
 };
 
 type RawProductSubcategory = {
@@ -77,6 +82,7 @@ type RawProductSubcategory = {
   description?: string | null;
   image?: string | null;
   cover_image?: string | null;
+  seo?: RawSeoBlock | null;
 };
 
 type RawProduct = {
@@ -111,6 +117,7 @@ type RawProduct = {
   product_category?: RawProductCategory | null;
   subcategory?: RawProductSubcategory | null;
   product_subcategory?: RawProductSubcategory | null;
+  seo?: RawSeoBlock | null;
 };
 
 type RawProductDocument = {
@@ -485,6 +492,7 @@ function mapCategory(item: RawProductCategory, locale = "tr"): ProductCategory {
       ...(item.subcategories ?? []),
       ...(item.product_subcategories ?? []),
     ].map((subcategory) => mapSubcategory(subcategory, locale)),
+    seo: mapSeoBlock(item.seo),
   };
 }
 
@@ -504,6 +512,7 @@ function mapSubcategory(item: RawProductSubcategory, locale = "tr"): ProductSubc
     slug,
     description: pickLocalized(item.description, locale),
     image: image || undefined,
+    seo: mapSeoBlock(item.seo),
   };
 }
 
@@ -558,6 +567,7 @@ function mapProduct(item: RawProduct, locale = "tr"): Product {
     series: item.series ?? "",
     features: normalizeStringList(item.features).map((feature) => pickLocalized(feature, locale)),
     featured: normalizeBoolean(item.is_featured ?? item.featured),
+    seo: mapSeoBlock(item.seo),
   };
 }
 

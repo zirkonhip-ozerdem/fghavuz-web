@@ -9,6 +9,7 @@ import {Footer} from "@/components/layout/Footer";
 import {Header} from "@/components/layout/Header";
 import {TopHeader} from "@/components/layout/TopHeader";
 import {getFeaturedCategories} from "@/lib/api/catalog";
+import {FALLBACK_OG_IMAGE, SITE_NAME, SITE_URL, absoluteUrl, jsonLd} from "@/lib/api/seo";
 import {FALLBACK_SITE_SETTINGS, getSiteSettings} from "@/lib/api/siteSettings";
 import "../globals.css";
 
@@ -39,34 +40,62 @@ export async function generateMetadata({
     : routing.defaultLocale;
   const t = await getTranslations({locale, namespace: "meta"});
   const siteSettings = await getSiteSettings(locale);
-  const title = siteSettings.siteName || t("title");
-  const languages = Object.fromEntries(
-    routing.locales.map((item) => [item, `/${item}`]),
-  );
+  const title = t("title");
   const favicon = siteSettings.favicon || "/favicon.png";
   const faviconType = favicon.endsWith(".svg") ? "image/svg+xml" : "image/png";
+  const googleVerification = process.env.GOOGLE_SITE_VERIFICATION;
 
+  // Canonical/hreflang are set per page; defining them here would make every
+  // page without its own alternates canonicalize to the homepage.
   return {
-    title,
+    metadataBase: new URL(SITE_URL),
+    title: {
+      default: title,
+      template: `%s | ${siteSettings.siteName || SITE_NAME}`,
+    },
     description: t("description"),
-    metadataBase: new URL("https://fgpool.example"),
+    applicationName: SITE_NAME,
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
+    },
     icons: {
       icon: [{url: favicon, type: faviconType}],
       shortcut: favicon,
       apple: favicon,
     },
-    alternates: {
-      canonical: `/${locale}`,
-      languages,
-    },
+    ...(googleVerification ? {verification: {google: googleVerification}} : {}),
     openGraph: {
       title,
       description: t("description"),
       type: "website",
+      siteName: SITE_NAME,
       locale,
-      images: ["/assets/hero-pool.jpeg"],
+      images: [FALLBACK_OG_IMAGE],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: t("description"),
+      images: [FALLBACK_OG_IMAGE],
     },
   };
+}
+
+function isRealProfile(url: string | null): url is string {
+  if (!url) return false;
+  try {
+    return new URL(url).pathname.replace(/\/$/, "") !== "";
+  } catch {
+    return false;
+  }
 }
 
 export default async function LocaleLayout({
@@ -90,10 +119,35 @@ export default async function LocaleLayout({
   ]);
   const safeSiteSettings = siteSettings ?? FALLBACK_SITE_SETTINGS;
   const dir = locale === "ar" ? "rtl" : "ltr";
+  const usesApiSettings = safeSiteSettings !== FALLBACK_SITE_SETTINGS;
+  const organizationLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": `${SITE_URL}/#organization`,
+        name: safeSiteSettings.siteName || SITE_NAME,
+        url: SITE_URL,
+        logo: absoluteUrl(safeSiteSettings.logo || "/assets/logo.png"),
+        ...(usesApiSettings && safeSiteSettings.phone ? {telephone: safeSiteSettings.phone} : {}),
+        ...(usesApiSettings && safeSiteSettings.email ? {email: safeSiteSettings.email} : {}),
+        sameAs: Object.values(safeSiteSettings.social).filter(isRealProfile),
+      },
+      {
+        "@type": "WebSite",
+        "@id": `${SITE_URL}/#website`,
+        name: safeSiteSettings.siteName || SITE_NAME,
+        url: SITE_URL,
+        inLanguage: locale,
+        publisher: {"@id": `${SITE_URL}/#organization`},
+      },
+    ],
+  };
 
   return (
     <html lang={locale} dir={dir} data-scroll-behavior="smooth" className={`${inter.variable} ${manrope.variable}`}>
       <body>
+        <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(organizationLd)} />
         <NextIntlClientProvider messages={messages}>
           <TopHeader locale={locale} siteSettings={safeSiteSettings} />
           <Header locale={locale} categories={categories} siteSettings={safeSiteSettings} />

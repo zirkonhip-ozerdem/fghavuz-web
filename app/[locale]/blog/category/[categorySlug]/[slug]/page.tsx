@@ -3,11 +3,12 @@ import type {Metadata} from "next";
 import Image from "next/image";
 import {notFound} from "next/navigation";
 import {getTranslations} from "next-intl/server";
-import {Link} from "@/i18n/navigation";
+import {getLocalizedHref, Link} from "@/i18n/navigation";
 import {PageHeader} from "@/components/layout/PageHeader";
 import type {Locale} from "@/i18n/routing";
 import {getBlogPostBySlug} from "@/lib/api/blog";
-import {toMetadata} from "@/lib/api/seo";
+import {absoluteUrl, jsonLd, plainSummary, SITE_NAME, SITE_URL, toMetadata} from "@/lib/api/seo";
+import {getBlogPostPaths, withCurrent} from "@/lib/api/seoPaths";
 
 // next-intl'in middleware rewrite'i sonrasi Next.js dinamik segment
 // parametreleri Arapca gibi non-ASCII slug'lar icin decode edilmemis
@@ -36,10 +37,21 @@ export async function generateMetadata({
     return {};
   }
 
-  return toMetadata(post.seo, {
-    title: post.title[locale],
-    description: post.excerpt[locale],
-  });
+  const paths = withCurrent(
+    await getBlogPostPaths(post.id),
+    locale,
+    `/blog/${post.categorySlug}/${post.slug}`,
+  );
+
+  return toMetadata(
+    post.seo,
+    {
+      title: post.title[locale],
+      description: plainSummary(post.excerpt[locale] || post.content?.[locale]),
+      image: post.image,
+    },
+    {locale, path: paths, type: "article"},
+  );
 }
 
 export default async function BlogArticlePage({
@@ -71,9 +83,21 @@ export default async function BlogArticlePage({
       )
     : null;
   const metaLabel = [dateLabel, readTime].filter(Boolean).join(" · ");
+  const articleLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: title,
+    description: plainSummary(excerpt || content),
+    image: [absoluteUrl(post.image)],
+    ...(post.date ? {datePublished: post.date} : {}),
+    inLanguage: locale,
+    mainEntityOfPage: absoluteUrl(getLocalizedHref(`/blog/${post.categorySlug}/${post.slug}`, locale)),
+    publisher: {"@type": "Organization", "@id": `${SITE_URL}/#organization`, name: SITE_NAME},
+  };
 
   return (
     <main className="bg-white text-ink pb-20">
+      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(articleLd)} />
       <PageHeader
         locale={locale}
         title={title}

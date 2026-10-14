@@ -35,7 +35,7 @@ export async function generateMetadata({
     getTranslations({locale, namespace: "meta"}),
   ]);
 
-  return toMetadata(seo, {title: t("title"), description: t("description")});
+  return toMetadata(seo, {title: t("title"), description: t("description")}, {locale, path: "/"});
 }
 
 export default async function HomePage({
